@@ -54,7 +54,6 @@ import {
     tsNeverKeyword,
     tsNullKeyword,
     tsNumberKeyword,
-    tsObjectKeyword,
     tsPropertySignature,
     tsStringKeyword,
     tsThisType,
@@ -168,7 +167,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
             return tsTypeReference(identifier('any'), tsTypeParameters);
 
         } else if (id.name === 'Object') {
-            return tsObjectKeyword()
+            return tsAnyKeyword()
         // @ts-ignore
         } else if (id.type === 'QualifiedTypeIdentifier') {
             // @ts-ignore
@@ -186,7 +185,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
     }
 
     if (isNodePath(isMixedTypeAnnotation, path)) {
-        return tsTypeLiteral([]);
+        return tsAnyKeyword();
     }
 
     if (isNodePath(isNullableTypeAnnotation, path)) {
