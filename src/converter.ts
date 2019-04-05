@@ -6,6 +6,7 @@ import recast from "recast";
 import * as prettier from "prettier";
 import { writeFileSync } from "fs";
 import plugin from "./index";
+import { asyncForEach } from "./util";
 
 function recastParse(
   code: string,
@@ -43,15 +44,6 @@ export const babelOptions: babel.TransformOptions = {
 
 const successFiles: string[] = [];
 const errorFiles: string[] = [];
-
-async function asyncForEach<T>(
-  array: Array<T>,
-  callback: (x: T, index: number, array: Array<T>) => Promise<void>
-) {
-  for (let index = 0; index < array.length; index++) {
-    await callback(array[index], index, array);
-  }
-}
 
 export default async function convert(files: string[]) {
   await asyncForEach(files, async (path, i) => {

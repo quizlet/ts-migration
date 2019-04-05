@@ -1,29 +1,20 @@
 #!/usr/bin/env node
-import * as babel from "@babel/core";
-import dynamicImport from "@babel/plugin-syntax-dynamic-import";
-import recast from "recast";
-import * as prettier from "prettier";
 import pathUtils from "path";
 
 const argv = require("minimist")(global.process.argv.slice(2));
 
-import fs, { writeFileSync } from "fs";
+import fs from "fs";
 
 import { promisify } from "util";
 import simplegit from "simple-git/promise";
 
 import collectFiles from "collectFiles";
 import convert from "converter";
+import { asyncForEach } from "./util";
 
 const git = simplegit();
 
 const exists = promisify(fs.exists);
-
-async function asyncForEach(array, callback) {
-  for (let index = 0; index < array.length; index++) {
-    await callback(array[index], index, array);
-  }
-}
 
 async function process() {
   const files = await collectFiles();

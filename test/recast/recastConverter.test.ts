@@ -1,5 +1,5 @@
-import { babelOptions } from '../../src/converter';
-import * as babel from '@babel/core';
+import { babelOptions } from "../../src/converter";
+import * as babel from "@babel/core";
 
 type TestCase = {
   title: string;
@@ -15,28 +15,28 @@ const runner = function(testCases: TestCase[]) {
   });
 };
 
-describe('recast converter', () => {
+describe("recast converter", () => {
   runner([
     {
-      title: 'preserves comments above imports',
-      code: `// @flow\nimport * as React from \'react\';`,
+      title: "preserves comments above imports",
+      code: `// @flow\nimport * as React from "react";`,
       output: `// @flow
-import * as React from \'react\';
-`,
+import * as React from "react";
+`
     },
     {
-      title: 'preserves comments above imports',
+      title: "preserves comments above imports",
       code: `type Props = {
   children?: React.Node,
   // The vertical alignment of the content before it starts to scroll
-  verticalAlignWithoutScroll?: 'top' | 'center',
+  verticalAlignWithoutScroll?: "top" | "center",
 };`,
       output: `type Props = {
   children?: React.Node;
   // The vertical alignment of the content before it starts to scroll
-  verticalAlignWithoutScroll?: 'top' | 'center';
+  verticalAlignWithoutScroll?: "top" | "center";
 };
-`,
-    },
+`
+    }
   ]);
 });
