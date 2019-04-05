@@ -8,19 +8,21 @@ import fs from "fs";
 import { promisify } from "util";
 import simplegit from "simple-git/promise";
 
-import collectFiles from "collectFiles";
-import convert from "converter";
+import collectFiles from "./collectFiles";
+import convert from "./converter";
 import { asyncForEach } from "./util";
 
 const git = simplegit();
 
 const exists = promisify(fs.exists);
 
+const rootDir = "../quizlet/";
+
 async function process() {
-  const files = await collectFiles();
+  const files = await collectFiles(rootDir);
 
   console.log(`Converting ${files.length} files`);
-  const { successFiles, errorFiles } = await convert(files);
+  const { successFiles, errorFiles } = await convert(files, rootDir);
 
   console.log(`${successFiles.length} converted successfully.`);
   console.log(`${errorFiles.length} errors:`);
@@ -57,7 +59,7 @@ async function process() {
     const testFiles = successFiles.filter(path => {
       return path.includes("__tests_") || path.includes("-test");
     });
-    await asyncForEach(testFiles, async (path, i) => {
+    await asyncForEach(testFiles, async path => {
       const parsedPath = pathUtils.parse(path);
       const jsSnapPath = `${parsedPath.dir}/__snapshots__/${
         parsedPath.name

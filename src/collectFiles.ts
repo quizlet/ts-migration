@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import fs, { writeFileSync } from "fs";
+import fs from "fs";
 
 import { promisify } from "util";
 import { resolve } from "path";
@@ -16,15 +16,14 @@ async function getFiles(dir: string): Promise<string[]> {
       return (await stat(res)).isDirectory() ? getFiles(res) : res;
     })
   );
+  // @ts-ignore
   return files.reduce((a, f) => a.concat(f), [] as string[]);
 }
 
-const rootDir = "../../quizlet";
-
-export default async function collectFiles() {
+export default async function collectFiles(rootDir: string) {
   const files: string[] = [
-    ...(await getFiles(`${rootDir}app/j`)),
-    ...(await getFiles(`${rootDir}stories`))
+    ...(await getFiles(`${rootDir}app/j/about`))
+    // ...(await getFiles(`${rootDir}stories`))
   ];
   const filesWithExtensions = files.filter(f => {
     return f.endsWith(".js") || f.endsWith(".jsx");

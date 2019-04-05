@@ -16,7 +16,8 @@
     "test": "jest",
     "test-watch": "jest --watch",
     "build": "tsc",
-    "watch": "tsc --watch"
+    "watch": "tsc --watch",
+    "runner": "ts-node src/runner.ts"
   },
   "keywords": [
     "babel",
@@ -40,7 +41,8 @@
     "@types/prettier": "^1.16.1",
     "prettier": "^1.16.4",
     "recast": "^0.17.5",
-    "simple-git": "^1.110.0"
+    "simple-git": "^1.110.0",
+    "ts-node": "^8.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",

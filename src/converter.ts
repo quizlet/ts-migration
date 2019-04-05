@@ -22,35 +22,37 @@ function recastParse(
   });
 }
 
-function recastGenerate(ast: File): { code: string; map?: object } {
-  const file = recast.print(ast);
-  file.code = prettier.format(file.code, {
-    ...prettier.resolveConfig.sync(global.process.cwd()),
-    parser: "typescript"
-  });
-  return file;
+function buildRecastGenerate(rootDir: string = global.process.cwd()) {
+  return function recastGenerate(ast: File): { code: string; map?: object } {
+    const file = recast.print(ast);
+    file.code = prettier.format(file.code, {
+      ...prettier.resolveConfig.sync(rootDir),
+      parser: "typescript"
+    });
+    return file;
+  };
 }
 
-const recastPlugin = function() {
+const recastPlugin = function(rootDir: string) {
   return {
     parserOverride: recastParse,
-    generatorOverride: recastGenerate
+    generatorOverride: buildRecastGenerate(rootDir)
   };
 };
 
-export const babelOptions: babel.TransformOptions = {
-  plugins: [recastPlugin, plugin, dynamicImport]
-};
+export const babelOptions = (rootDir: string): babel.TransformOptions => ({
+  plugins: [recastPlugin(rootDir), plugin, dynamicImport]
+});
 
 const successFiles: string[] = [];
 const errorFiles: string[] = [];
 
-export default async function convert(files: string[]) {
+export default async function convert(files: string[], rootDir: string) {
   await asyncForEach(files, async (path, i) => {
     console.log(`${i} of ${files.length}: Converting ${path}`);
     let res;
     try {
-      res = await babel.transformFileAsync(path, babelOptions);
+      res = await babel.transformFileAsync(path, babelOptions(rootDir));
     } catch (err) {
       console.log(err);
       errorFiles.push(path);
