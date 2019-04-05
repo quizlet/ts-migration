@@ -12,19 +12,19 @@ import collectFiles from "./collectFiles";
 import convert from "./converter";
 import { asyncForEach } from "./util";
 
-const git = simplegit();
+const rootDir = "../quizlet/";
+const filePaths = {
+  rootDir,
+  include: ["app/j/about", "stories"],
+  exclude: ["/vendor/", "i18n/findMessageAndLocale"],
+  extensions: [".js", ".jsx"]
+};
+const git = simplegit(rootDir);
 
 const exists = promisify(fs.exists);
 
-const rootDir = "../quizlet/";
-
 async function process() {
-  const files = await collectFiles({
-    rootDir,
-    include: ["app/j/about", "stories"],
-    exclude: ["/vendor/", "i18n/findMessageAndLocale"],
-    extensions: [".js", ".jsx"]
-  });
+  const files = await collectFiles(filePaths);
 
   console.log(`Converting ${files.length} files`);
   const { successFiles, errorFiles } = await convert(files, rootDir);
@@ -32,7 +32,7 @@ async function process() {
   console.log(`${successFiles.length} converted successfully.`);
   console.log(`${errorFiles.length} errors:`);
   console.log(errorFiles);
-  if (!argv.d) {
+  if (argv.commit) {
     console.log("Committing changed files");
     try {
       await git.add(".");
