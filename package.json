@@ -17,7 +17,8 @@
     "test-watch": "jest --watch",
     "build": "tsc",
     "watch": "tsc --watch",
-    "runner": "ts-node src/runner.ts"
+    "runner": "ts-node src/runner.ts",
+    "ignoreErrors": "ts-node src/ignoreErrors.ts"
   },
   "keywords": [
     "babel",
@@ -38,7 +39,9 @@
     "@babel/types": "^7.2.2",
     "@types/babel__core": "^7.1.0",
     "@types/jest": "^24.0.11",
+    "@types/lodash": "^4.14.123",
     "@types/prettier": "^1.16.1",
+    "lodash": "^4.17.11",
     "prettier": "^1.16.4",
     "recast": "^0.17.5",
     "simple-git": "^1.110.0",

@@ -31,12 +31,7 @@ export default async function collectFiles(paths: {
   );
   const files = filesArr.reduce((a, f) => a.concat(f), [] as string[]);
 
-  // const files: string[] = [
-  //   ...(await getFiles(`${paths.rootDir}app/j/about`))
-  //   // ...(await getFiles(`${rootDir}stories`))
-  // ];
   const filesWithExtensions = files.filter(f => {
-    // return f.endsWith(".js") || f.endsWith(".jsx");
     return paths.extensions.some(e => f.endsWith(e));
   });
   const filesWithoutExclusions = filesWithExtensions.filter(f => {

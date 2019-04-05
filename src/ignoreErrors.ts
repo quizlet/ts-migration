@@ -1,59 +1,75 @@
 #!/usr/bin/env node
-import pathUtils from "path";
-
-const argv = require("minimist")(global.process.argv.slice(2));
-
-import fs from "fs";
-
-import { promisify } from "util";
-import simplegit from "simple-git/promise";
-
+import * as ts from "typescript";
+import { groupBy } from "lodash";
+import { readFileSync, writeFileSync, existsSync } from "fs";
+import path from "path";
+import * as prettier from "prettier";
 import collectFiles from "./collectFiles";
-import convert from "./converter";
-import { asyncForEach } from "./util";
 
 const rootDir = "../quizlet/";
+
+// const optionsJSON = require(`${rootDir}tsconfig.json`);
+const fileName = `${rootDir}tsconfig.json`;
+const optionsFile = readFileSync(fileName, "utf8");
+const configJSON = ts.parseConfigFileTextToJson(fileName, optionsFile);
+const compilerOptions = ts.convertCompilerOptionsFromJson(
+  configJSON.config.compilerOptions,
+  rootDir
+);
+
+const successFiles: string[] = [];
+const errorFiles: string[] = [];
+
 const filePaths = {
   rootDir,
-  include: ["app/j/about", "stories"],
-  exclude: ["/vendor/", "i18n/findMessageAndLocale"],
+  include: configJSON.config.include,
+  exclude: [],
   extensions: [".ts", ".tsx"]
 };
-const git = simplegit(rootDir);
+async function compile(paths: any, options: ts.CompilerOptions): Promise<void> {
+  const files = await collectFiles(paths);
+  const program = ts.createProgram(files, options);
 
-const exists = promisify(fs.exists);
+  const diagnostics = ts.getPreEmitDiagnostics(program).filter(d => !!d.file);
 
-async function process() {
-  const files = await collectFiles(filePaths);
-
-  console.log(`Converting ${files.length} files`);
-  const { successFiles, errorFiles } = await convert(files, rootDir);
-
-  console.log(`${successFiles.length} converted successfully.`);
+  const diagnosticsGroupedByFile = groupBy(diagnostics, d => d.file!.fileName);
+  Object.keys(diagnosticsGroupedByFile).forEach(async (fileName, i, arr) => {
+    const fileDiagnostics = diagnosticsGroupedByFile[fileName];
+    console.log(
+      `${i} of ${arr.length - 1}: Ignoring ${
+        fileDiagnostics.length
+      } ts-errors in ${fileName}`
+    );
+    try {
+      let filePath = path.join(rootDir, fileName);
+      if (!existsSync(filePath)) {
+        filePath = fileName;
+        if (!existsSync(filePath)) {
+          console.log(`${filePath} does not exist`);
+          return;
+        }
+      }
+      const codeSplitByLine = readFileSync(filePath, "utf8").split("\n");
+      fileDiagnostics.forEach((diagnostic, errorIndex) => {
+        const { line } = diagnostic!.file!.getLineAndCharacterOfPosition(
+          diagnostic.start!
+        );
+        codeSplitByLine.splice(line + errorIndex, 0, "// @ts-ignore");
+      });
+      const fileData = codeSplitByLine.join("\n");
+      const formattedFileData = prettier.format(fileData, {
+        ...prettier.resolveConfig.sync(rootDir),
+        parser: "typescript"
+      });
+      writeFileSync(filePath, formattedFileData);
+      successFiles.push(fileName);
+    } catch (e) {
+      console.log(e);
+      errorFiles.push(fileName);
+    }
+  });
+  console.log(`${successFiles.length} files with errors ignored successfully.`);
   console.log(`${errorFiles.length} errors:`);
   console.log(errorFiles);
-  if (argv.commit) {
-    console.log("Committing changed files");
-    try {
-      await git.add(".");
-    } catch (e) {
-      console.log("error adding");
-      throw new Error(e);
-    }
-
-    try {
-      await git.commit("Convert files", undefined, { "-n": true });
-    } catch (e) {
-      console.log("error committing");
-      throw new Error(e);
-    }
-
-    console.log(`${successFiles.length} converted successfully.`);
-    console.log(`${errorFiles.length} errors:`);
-    console.log(errorFiles);
-  } else {
-    console.log("skipping commit in dry run mode");
-  }
 }
-
-process();
+compile(filePaths, compilerOptions.options);

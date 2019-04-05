@@ -15,7 +15,7 @@ import { asyncForEach } from "./util";
 const rootDir = "../quizlet/";
 const filePaths = {
   rootDir,
-  include: ["app/j/about", "stories"],
+  include: ["app/j", "stories"],
   exclude: ["/vendor/", "i18n/findMessageAndLocale"],
   extensions: [".js", ".jsx"]
 };
