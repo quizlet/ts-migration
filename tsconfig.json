@@ -1,10 +1,7 @@
 {
   "compilerOptions": {
     "declaration": true,
-    "lib": [
-      "es2018",
-      "dom"
-    ],
+    "lib": ["es2018", "dom"],
     "module": "commonjs",
     "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
@@ -16,18 +13,13 @@
     "outDir": "./dist",
     "preserveConstEnums": false,
     "paths": {
-      "babel-plugin-tester": [
-        "./types/babel-plugin-tester.d.ts"
-      ],
-      "@babel/traverse": [
-        "./types/babel-traverse.d.ts"
-      ]
+      "babel-plugin-tester": ["./types/babel-plugin-tester.d.ts"],
+      "@babel/traverse": ["./types/babel-traverse.d.ts"]
     },
     "sourceMap": true,
     "strict": true,
-    "target": "es2015"
+    "target": "es2015",
+    "esModuleInterop": true
   },
-  "include": [
-    "./src/**/*.ts"
-  ]
+  "include": ["./src/**/*.ts"]
 }
