@@ -20,16 +20,27 @@ async function getFiles(dir: string): Promise<string[]> {
   return files.reduce((a, f) => a.concat(f), [] as string[]);
 }
 
-export default async function collectFiles(rootDir: string) {
-  const files: string[] = [
-    ...(await getFiles(`${rootDir}app/j/about`))
-    // ...(await getFiles(`${rootDir}stories`))
-  ];
+export default async function collectFiles(paths: {
+  rootDir: string;
+  include: string[];
+  exclude: string[];
+  extensions: string[];
+}) {
+  const filesArr = await Promise.all(
+    paths.include.map(includeDir => getFiles(`${paths.rootDir}${includeDir}`))
+  );
+  const files = filesArr.reduce((a, f) => a.concat(f), [] as string[]);
+
+  // const files: string[] = [
+  //   ...(await getFiles(`${paths.rootDir}app/j/about`))
+  //   // ...(await getFiles(`${rootDir}stories`))
+  // ];
   const filesWithExtensions = files.filter(f => {
-    return f.endsWith(".js") || f.endsWith(".jsx");
+    // return f.endsWith(".js") || f.endsWith(".jsx");
+    return paths.extensions.some(e => f.endsWith(e));
   });
   const filesWithoutExclusions = filesWithExtensions.filter(f => {
-    return !f.includes("/vendor/") && !f.includes("i18n/findMessageAndLocale");
+    return !paths.exclude.some(e => f.includes(e));
   });
   return filesWithoutExclusions;
 }

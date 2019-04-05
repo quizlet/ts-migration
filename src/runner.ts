@@ -19,7 +19,12 @@ const exists = promisify(fs.exists);
 const rootDir = "../quizlet/";
 
 async function process() {
-  const files = await collectFiles(rootDir);
+  const files = await collectFiles({
+    rootDir,
+    include: ["app/j/about", "stories"],
+    exclude: ["/vendor/", "i18n/findMessageAndLocale"],
+    extensions: [".js", ".jsx"]
+  });
 
   console.log(`Converting ${files.length} files`);
   const { successFiles, errorFiles } = await convert(files, rootDir);
