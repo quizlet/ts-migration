@@ -5,7 +5,7 @@ import dynamicImport from "@babel/plugin-syntax-dynamic-import";
 import recast from "recast";
 import * as prettier from "prettier";
 import { writeFileSync } from "fs";
-import plugin from "./index";
+import plugin from "./babel-plugin/index";
 import { asyncForEach } from "./util";
 
 function recastParse(

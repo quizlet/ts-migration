@@ -1,9 +1,9 @@
-import * as pluginTester from "babel-plugin-tester";
-import { buildPlugin } from "../../src/plugin";
+import pluginTester from "babel-plugin-tester";
+import { buildPlugin } from "../../src/babel-plugin/plugin";
 import {
   ImportDeclaration,
   ImportSpecifier
-} from "../../src/visitors/import_declaration";
+} from "../../src/babel-plugin/visitors/import_declaration";
 
 pluginTester({
   plugin: buildPlugin([ImportDeclaration, ImportSpecifier]),
