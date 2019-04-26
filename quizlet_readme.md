@@ -15,26 +15,32 @@ Run `ts-node ./typescript/conversion/convert.ts`
 # Runbook
 
 `qdev stop` -- otherwise the syncer goes into overdrive
-Run `ts-node ./typescript/conversion/convert.ts`
+Run `yarn convert-codebase --commit` in this repo
+In quizlet-web:
+run `yarn format:prettier` and commit
 
-find/replace in .tsx
+Update the extensions for the entry files in:
+
+```
+app/j/__tests__/QuizletAddQWaitPlugin-test.tsx
+QuizletAddWaitLoadPlugin-test.tsx
+QuizletWebpackChunkHashPlugin
+```
+
+Update snaps in QuizletWebpackChunkHashPlugin
 
 - `React.Node` -> `React.ReactNode`
 - `React.Element` -> `JSX.Element`
+- `SyntheticEvent` -> `React.SyntheticEvent` // space is intentional
 - `extends PureComponent {` -> `extends PureComponent<any> {`
 - `extends Component {` -> `extends Component<any> {`
 - `extends React.Component {` -> `extends React.Component<any> {`
-- `from 'set/types.js';` -> `from 'set/types.tsx';` (two files)
-
-QuizletAddQWaitPlugin-test.tsx
-
-- Update the path to the svg mapper in `jest.config.js`.
-- js extension in `app/j/__tests__/QuizletWebpackChunkHashPlugin-test.tsx`
-- js extension in `app/j/__tests__/QuizletAddQWaitPlugin-test.tsx`
-
-(many of these are fixed in 5e203ea186)
 
 Enable `"javascript.validate.enable"` in `.vscode/settings.json`
+
+# Lint fixes:
+
+is not in camel case.
 
 # Files with conversion errors
 
@@ -57,10 +63,7 @@ Enable `"javascript.validate.enable"` in `.vscode/settings.json`
 
 import svg app/j/assistant/utils/getCheckpointInfo.tsx
 yarn add --dev @types/backbone
-import graphql files app/j/queries/index.tsx
-
-app/j/checkout/QStripe.tsx(340,26): error TS2304: Cannot find name 'jQuery'.
-app/j/combine/components/CombinePage.tsx(99,32): error TS2304: Cannot find name 'SyntheticEvent'.
+import graphql files app/j/queries/index.tsx // ignore for now
 
 module for config/languages
 module for config/ads
@@ -75,6 +78,17 @@ app/j/tracking/loadFacebookTrackingPixel.tsx(12,12): error TS2339: Property '\_f
 SyntheticMouseEvent, SyntheticEvent
 app/j/components/UITextarea.tsx(18,18): error TS2304: Cannot find name 'SyntheticInputEvent'.
 
+# Solutions
+
+- Should be on global.
+- Should be on window.
+
 # Good resources
 
 https://github.com/sw-yx/react-typescript-cheatsheet
+
+# Open source CLI notes.
+
+- Validate presence of tsconfig, prettierconfig?
+- how to handle config
+- rename .jsx.snap

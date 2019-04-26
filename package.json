@@ -17,8 +17,8 @@
     "test-watch": "jest --watch",
     "build": "tsc",
     "watch": "tsc --watch",
-    "runner": "ts-node src/runner.ts",
-    "ignoreErrors": "ts-node src/ignoreErrors.ts"
+    "convert-codebase": "ts-node src/convertCodebase.ts",
+    "ignore-errors": "ts-node src/ignoreErrors.ts"
   },
   "keywords": [
     "babel",

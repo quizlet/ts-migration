@@ -10,7 +10,7 @@ type TestCase = {
 const runner = function(testCases: TestCase[]) {
   testCases.forEach(c => {
     it(c.title, () => {
-      expect(babel.transform(c.code, babelOptions)!.code).toBe(c.output);
+      expect(babel.transform(c.code, babelOptions("src"))!.code).toBe(c.output);
     });
   });
 };
@@ -25,7 +25,7 @@ import * as React from "react";
 `
     },
     {
-      title: "preserves comments above imports",
+      title: "preserves comments within typedefs",
       code: `type Props = {
   children?: React.Node,
   // The vertical alignment of the content before it starts to scroll

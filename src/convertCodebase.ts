@@ -12,26 +12,31 @@ import collectFiles from "./collectFiles";
 import convert from "./converter";
 import { asyncForEach } from "./util";
 
-const rootDir = "../quizlet/";
+const filesFromArgs = (function() {
+  const { file } = argv;
+  if (!file) return undefined;
+  return Array.isArray(file) ? file : [file];
+})();
+
 const filePaths = {
-  rootDir,
+  rootDir: "../quizlet/",
   include: ["app/j", "stories"],
   exclude: ["/vendor/", "i18n/findMessageAndLocale"],
   extensions: [".js", ".jsx"]
 };
-const git = simplegit(rootDir);
+const git = simplegit(filePaths.rootDir);
 
 const exists = promisify(fs.exists);
 
 async function process() {
-  const files = await collectFiles(filePaths);
+  const files = filesFromArgs || (await collectFiles(filePaths));
 
   console.log(`Converting ${files.length} files`);
-  const { successFiles, errorFiles } = await convert(files, rootDir);
+  const { successFiles, errorFiles } = await convert(files, filePaths.rootDir);
 
   console.log(`${successFiles.length} converted successfully.`);
   console.log(`${errorFiles.length} errors:`);
-  console.log(errorFiles);
+  if (errorFiles.length) console.log(errorFiles);
   if (argv.commit) {
     console.log("Committing changed files");
     try {
@@ -82,8 +87,8 @@ async function process() {
         }
       }
     });
-    console.log(`${renameErrors.length} errors:`);
-    console.log(renameErrors);
+    console.log(`${renameErrors.length} errors renaming files`);
+    if (renameErrors.length) console.log(renameErrors);
 
     console.log("Committing renamed files");
     try {
@@ -99,8 +104,8 @@ async function process() {
       throw new Error(e);
     }
     console.log(`${successFiles.length} converted successfully.`);
-    console.log(`${errorFiles.length} errors:`);
-    console.log(errorFiles);
+    console.log(`${errorFiles.length} errors`);
+    if (errorFiles.length) console.log(errorFiles);
   } else {
     console.log("skipping commit in dry run mode");
   }
