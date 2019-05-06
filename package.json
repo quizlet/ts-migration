@@ -18,7 +18,7 @@
     "build": "tsc",
     "watch": "tsc --watch",
     "convert-codebase": "ts-node src/convertCodebase.ts",
-    "ignore-errors": "ts-node src/ignoreErrors.ts"
+    "ignore-errors": "ts-node ./src/ignoreErrors.ts"
   },
   "keywords": [
     "babel",

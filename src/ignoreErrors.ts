@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import * as ts from "typescript";
+import ts from "typescript";
 import { groupBy } from "lodash";
 import { readFileSync, writeFileSync, existsSync } from "fs";
 import path from "path";
@@ -26,6 +26,9 @@ const filePaths = {
   exclude: [],
   extensions: [".ts", ".tsx"]
 };
+
+const prettierConfig = prettier.resolveConfig.sync(rootDir);
+
 async function compile(paths: any, options: ts.CompilerOptions): Promise<void> {
   const files = await collectFiles(paths);
   const program = ts.createProgram(files, options);
@@ -38,7 +41,7 @@ async function compile(paths: any, options: ts.CompilerOptions): Promise<void> {
     console.log(
       `${i} of ${arr.length - 1}: Ignoring ${
         fileDiagnostics.length
-      } ts-errors in ${fileName}`
+      } ts-error(s) in ${fileName}`
     );
     try {
       let filePath = path.join(rootDir, fileName);
@@ -46,6 +49,7 @@ async function compile(paths: any, options: ts.CompilerOptions): Promise<void> {
         filePath = fileName;
         if (!existsSync(filePath)) {
           console.log(`${filePath} does not exist`);
+          errorFiles.push(filePath);
           return;
         }
       }
@@ -54,11 +58,11 @@ async function compile(paths: any, options: ts.CompilerOptions): Promise<void> {
         const { line } = diagnostic!.file!.getLineAndCharacterOfPosition(
           diagnostic.start!
         );
-        codeSplitByLine.splice(line + errorIndex, 0, "// @ts-ignore");
+        codeSplitByLine.splice(line + errorIndex, 0, "// @ts-ignore FIXME");
       });
       const fileData = codeSplitByLine.join("\n");
       const formattedFileData = prettier.format(fileData, {
-        ...prettier.resolveConfig.sync(rootDir),
+        ...prettierConfig,
         parser: "typescript"
       });
       writeFileSync(filePath, formattedFileData);
@@ -71,5 +75,10 @@ async function compile(paths: any, options: ts.CompilerOptions): Promise<void> {
   console.log(`${successFiles.length} files with errors ignored successfully.`);
   console.log(`${errorFiles.length} errors:`);
   console.log(errorFiles);
+  const finalProgram = ts.createProgram(files, options);
+  const finalDiagnostics = ts
+    .getPreEmitDiagnostics(finalProgram)
+    .filter(d => !!d.file);
+  console.log("Errors remaining after ignoring: ", finalDiagnostics.length);
 }
 compile(filePaths, compilerOptions.options);
