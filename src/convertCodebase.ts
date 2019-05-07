@@ -56,29 +56,17 @@ async function process() {
     const renameErrors: string[] = [];
 
     console.log("renaming files");
-    await asyncForEach(successFiles, async (path, i) => {
-      console.log(`${i} of ${successFiles.length}: Renaming ${path}`);
-      try {
-        await git.mv(path, path.replace(".js", ".tsx"));
-      } catch (e) {
-        console.log(e);
-        renameErrors.push(path);
-      }
-    });
 
-    const testFiles = successFiles.filter(path => {
-      return path.includes("__tests_") || path.includes("-test");
-    });
-    await asyncForEach(testFiles, async path => {
+    async function renameSnap(path: string, oldExt: string, newExt: string) {
       const parsedPath = pathUtils.parse(path);
       const jsSnapPath = `${parsedPath.dir}/__snapshots__/${
         parsedPath.name
-      }.js.snap`;
+      }.${oldExt}.snap`;
       const tsSnapPath = `${parsedPath.dir}/__snapshots__/${
         parsedPath.name
-      }.tsx.snap`;
+      }.${newExt}.snap`;
       if (await exists(jsSnapPath)) {
-        console.log(`Renaming ${jsSnapPath}`);
+        console.log(`Renaming ${jsSnapPath} to ${tsSnapPath}`);
         try {
           await git.mv(jsSnapPath, tsSnapPath);
         } catch (e) {
@@ -86,7 +74,35 @@ async function process() {
           renameErrors.push(path);
         }
       }
+    }
+
+    async function containsReact(path: string) {
+      const file = fs.readFileSync(path, "utf8");
+      return file.includes("from 'React';");
+    }
+
+    await asyncForEach(successFiles, async (path, i) => {
+      console.log(`${i} of ${successFiles.length}: Renaming ${path}`);
+      try {
+        const parsedPath = pathUtils.parse(path);
+        const oldExt = parsedPath.ext;
+
+        const newExt = (() => {
+          if (oldExt === "jsx") return "tsx";
+          return containsReact(path) ? "tsx" : "ts";
+        })();
+
+        const newPath = path.replace(oldExt, newExt);
+        await git.mv(path, newPath);
+        if (path.includes("__tests_") || path.includes("-test")) {
+          await renameSnap(path, oldExt, newExt);
+        }
+      } catch (e) {
+        console.log(e);
+        renameErrors.push(path);
+      }
     });
+
     console.log(`${renameErrors.length} errors renaming files`);
     if (renameErrors.length) console.log(renameErrors);
 
