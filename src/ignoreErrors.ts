@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import ts from "typescript";
-import { groupBy } from "lodash";
+import { groupBy, uniqBy } from "lodash";
 import { readFileSync, writeFileSync, existsSync } from "fs";
 import path from "path";
 import * as prettier from "prettier";
@@ -53,6 +53,20 @@ function findParentJSX(n: NodeWrap | undefined): [number, NodeWrap] | null {
   return null;
 }
 
+function findParentKind(
+  n: NodeWrap | undefined,
+  kind: number
+): [number, NodeWrap] | null {
+  if (n) {
+    const nodeKind = n.kind as number;
+    if (nodeKind === kind) {
+      return [nodeKind, n];
+    }
+    return findParentKind(n.parent, kind);
+  }
+  return null;
+}
+
 async function compile(paths: any, options: ts.CompilerOptions): Promise<void> {
   const files = await collectFiles(paths);
   const program = ts.createProgram(files, options);
@@ -61,7 +75,9 @@ async function compile(paths: any, options: ts.CompilerOptions): Promise<void> {
 
   const diagnosticsGroupedByFile = groupBy(diagnostics, d => d.file!.fileName);
   Object.keys(diagnosticsGroupedByFile).forEach(async (fileName, i, arr) => {
-    const fileDiagnostics = diagnosticsGroupedByFile[fileName];
+    const fileDiagnostics = uniqBy(diagnosticsGroupedByFile[fileName], d =>
+      d.file!.getLineAndCharacterOfPosition(d.start!)
+    ).reverse();
     console.log(
       `${i} of ${arr.length - 1}: Ignoring ${
         fileDiagnostics.length
@@ -78,7 +94,6 @@ async function compile(paths: any, options: ts.CompilerOptions): Promise<void> {
         }
       }
       const codeSplitByLine = readFileSync(filePath, "utf8").split("\n");
-      fileDiagnostics.reverse(); // sigh
       fileDiagnostics.forEach((diagnostic, _errorIndex) => {
         const convertedAST = utils.convertAst(diagnostic.file!);
         const n = utils.getWrappedNodeAtPosition(
@@ -88,17 +103,28 @@ async function compile(paths: any, options: ts.CompilerOptions): Promise<void> {
 
         const jsx = findParentJSX(n);
         if (jsx) {
-          // TODO handle JSX
+          // TODO handle JSX -- it's more involved than we can do right now.
+          // https://github.com/facebook/flow/blob/master/packages/flow-dev-tools/src/comment/add-commentsRunner.js#L732-L816
+          // In addition, the typescript parser will only recognize `// @ts-ignore` exactly, so it's not possible to ignore many errors in jsx.
+          // https://github.com/Microsoft/TypeScript/issues/27552
           return;
-          // const [jsxCode, jsxNode] = jsx;
-          // console.log(jsxCode);
-          // console.log(jsxNode.node.getFullText());
         }
-        // TODO don't add to the same line twice.
+
         const { line } = diagnostic!.file!.getLineAndCharacterOfPosition(
           diagnostic.start!
         );
         codeSplitByLine.splice(line, 0, "// @ts-ignore FIXME");
+
+        /*
+        const foo = foo()
+          ? // @ts-ignore
+            error.here.is.not.ignored()
+          : bar();
+        */
+        const inTernary = !!findParentKind(n, 205);
+        if (inTernary) {
+          codeSplitByLine.splice(line, 0, "// prettier-ignore");
+        }
       });
       const fileData = codeSplitByLine.join("\n");
       const formattedFileData = prettier.format(fileData, {
