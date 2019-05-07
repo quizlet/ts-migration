@@ -17,7 +17,7 @@
     "test-watch": "jest --watch",
     "build": "tsc",
     "watch": "tsc --watch",
-    "convert-codebase": "ts-node src/convertCodebase.ts",
+    "convert-codebase": "node -r ts-node/register --inspect src/convertCodebase.ts",
     "ignore-errors": "node -r ts-node/register --inspect ./src/ignoreErrors.ts"
   },
   "keywords": [

@@ -56,23 +56,28 @@ async function process() {
     const renameErrors: string[] = [];
 
     console.log("renaming files");
+    const snapsFound: string[] = [];
+    const snapsNotFound: string[] = [];
 
     async function renameSnap(path: string, oldExt: string, newExt: string) {
       const parsedPath = pathUtils.parse(path);
       const jsSnapPath = `${parsedPath.dir}/__snapshots__/${
         parsedPath.name
-      }.${oldExt}.snap`;
+      }${oldExt}.snap`;
       const tsSnapPath = `${parsedPath.dir}/__snapshots__/${
         parsedPath.name
-      }.${newExt}.snap`;
+      }${newExt}.snap`;
       if (await exists(jsSnapPath)) {
         console.log(`Renaming ${jsSnapPath} to ${tsSnapPath}`);
+        snapsFound.push(jsSnapPath);
         try {
           await git.mv(jsSnapPath, tsSnapPath);
         } catch (e) {
           console.log(e);
           renameErrors.push(path);
         }
+      } else {
+        snapsNotFound.push(jsSnapPath);
       }
     }
 
@@ -82,19 +87,19 @@ async function process() {
     }
 
     await asyncForEach(successFiles, async (path, i) => {
-      console.log(`${i} of ${successFiles.length}: Renaming ${path}`);
+      console.log(`${i + 1} of ${successFiles.length}: Renaming ${path}`);
       try {
         const parsedPath = pathUtils.parse(path);
         const oldExt = parsedPath.ext;
 
         const newExt = (() => {
-          if (oldExt === "jsx") return "tsx";
-          return containsReact(path) ? "tsx" : "ts";
+          if (oldExt === "jsx") return ".tsx";
+          return containsReact(path) ? ".tsx" : ".ts";
         })();
 
         const newPath = path.replace(oldExt, newExt);
         await git.mv(path, newPath);
-        if (path.includes("__tests_") || path.includes("-test")) {
+        if (path.includes("__tests__") || path.includes("-test")) {
           await renameSnap(path, oldExt, newExt);
         }
       } catch (e) {
@@ -105,6 +110,9 @@ async function process() {
 
     console.log(`${renameErrors.length} errors renaming files`);
     if (renameErrors.length) console.log(renameErrors);
+
+    console.log(`Snaps found: ${snapsFound.length}`);
+    console.log(`Snaps Not found: ${snapsNotFound.length}`);
 
     console.log("Committing renamed files");
     try {
