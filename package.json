@@ -18,7 +18,7 @@
     "build": "tsc",
     "watch": "tsc --watch",
     "convert-codebase": "ts-node src/convertCodebase.ts",
-    "ignore-errors": "ts-node ./src/ignoreErrors.ts"
+    "ignore-errors": "node -r ts-node/register --inspect ./src/ignoreErrors.ts"
   },
   "keywords": [
     "babel",
@@ -45,7 +45,8 @@
     "prettier": "^1.16.4",
     "recast": "^0.17.5",
     "simple-git": "^1.110.0",
-    "ts-node": "^8.0.3"
+    "ts-node": "^8.0.3",
+    "tsutils": "^3.10.0"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",

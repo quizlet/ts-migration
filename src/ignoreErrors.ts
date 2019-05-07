@@ -5,6 +5,8 @@ import { readFileSync, writeFileSync, existsSync } from "fs";
 import path from "path";
 import * as prettier from "prettier";
 import collectFiles from "./collectFiles";
+import * as utils from "tsutils";
+import { NodeWrap } from "tsutils";
 
 const rootDir = "../quizlet/";
 
@@ -28,6 +30,28 @@ const filePaths = {
 };
 
 const prettierConfig = prettier.resolveConfig.sync(rootDir);
+
+// JsxElement = 260,
+// JsxSelfClosingElement = 261,
+// JsxOpeningElement = 262,
+// JsxClosingElement = 263,
+// JsxFragment = 264,
+// JsxOpeningFragment = 265,
+// JsxClosingFragment = 266,
+// JsxAttribute = 267,
+// JsxAttributes = 268,
+// JsxSpreadAttribute = 269,
+// JsxExpression = 270,
+function findParentJSX(n: NodeWrap | undefined): [number, NodeWrap] | null {
+  if (n) {
+    const kind = n.kind as number;
+    if (kind >= 260 && kind <= 270) {
+      return [kind, n];
+    }
+    return findParentJSX(n.parent);
+  }
+  return null;
+}
 
 async function compile(paths: any, options: ts.CompilerOptions): Promise<void> {
   const files = await collectFiles(paths);
@@ -54,11 +78,27 @@ async function compile(paths: any, options: ts.CompilerOptions): Promise<void> {
         }
       }
       const codeSplitByLine = readFileSync(filePath, "utf8").split("\n");
-      fileDiagnostics.forEach((diagnostic, errorIndex) => {
+      fileDiagnostics.reverse(); // sigh
+      fileDiagnostics.forEach((diagnostic, _errorIndex) => {
+        const convertedAST = utils.convertAst(diagnostic.file!);
+        const n = utils.getWrappedNodeAtPosition(
+          convertedAST.wrapped,
+          diagnostic.start!
+        );
+
+        const jsx = findParentJSX(n);
+        if (jsx) {
+          // TODO handle JSX
+          return;
+          // const [jsxCode, jsxNode] = jsx;
+          // console.log(jsxCode);
+          // console.log(jsxNode.node.getFullText());
+        }
+        // TODO don't add to the same line twice.
         const { line } = diagnostic!.file!.getLineAndCharacterOfPosition(
           diagnostic.start!
         );
-        codeSplitByLine.splice(line + errorIndex, 0, "// @ts-ignore FIXME");
+        codeSplitByLine.splice(line, 0, "// @ts-ignore FIXME");
       });
       const fileData = codeSplitByLine.join("\n");
       const formattedFileData = prettier.format(fileData, {
