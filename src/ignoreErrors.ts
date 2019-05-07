@@ -7,8 +7,13 @@ import * as prettier from "prettier";
 import collectFiles from "./collectFiles";
 import * as utils from "tsutils";
 import { NodeWrap } from "tsutils";
+import simplegit from "simple-git/promise";
+
+const argv = require("minimist")(global.process.argv.slice(2));
 
 const rootDir = "../quizlet/";
+
+const git = simplegit(rootDir);
 
 // const optionsJSON = require(`${rootDir}tsconfig.json`);
 const fileName = `${rootDir}tsconfig.json`;
@@ -138,6 +143,23 @@ async function compile(paths: any, options: ts.CompilerOptions): Promise<void> {
       errorFiles.push(fileName);
     }
   });
+
+  if (argv.commit) {
+    console.log("Committing changes");
+    try {
+      await git.add(".");
+    } catch (e) {
+      console.log("error adding");
+      throw new Error(e);
+    }
+    try {
+      await git.commit("Rename files", undefined, { "-n": true });
+    } catch (e) {
+      console.log("error committing");
+      throw new Error(e);
+    }
+  }
+
   console.log(`${successFiles.length} files with errors ignored successfully.`);
   console.log(`${errorFiles.length} errors:`);
   console.log(errorFiles);

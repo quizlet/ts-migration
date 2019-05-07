@@ -83,7 +83,7 @@ async function process() {
 
     async function containsReact(path: string) {
       const file = fs.readFileSync(path, "utf8");
-      return file.includes("from 'React';");
+      return file.includes("from 'react';");
     }
 
     await asyncForEach(successFiles, async (path, i) => {
