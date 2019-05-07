@@ -153,7 +153,7 @@ async function compile(paths: any, options: ts.CompilerOptions): Promise<void> {
       throw new Error(e);
     }
     try {
-      await git.commit("Rename files", undefined, { "-n": true });
+      await git.commit("Ignore errors", undefined, { "-n": true });
     } catch (e) {
       console.log("error committing");
       throw new Error(e);
