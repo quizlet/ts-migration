@@ -30,7 +30,9 @@ const errorFiles: string[] = [];
 const filePaths = {
   rootDir,
   include: configJSON.config.include,
-  exclude: [],
+  exclude: [
+    "app/j/utils/ModeHelper.js" // adding ts-ignore causes lint errors
+  ],
   extensions: [".ts", ".tsx"]
 };
 
@@ -112,6 +114,7 @@ async function compile(paths: any, options: ts.CompilerOptions): Promise<void> {
           // https://github.com/facebook/flow/blob/master/packages/flow-dev-tools/src/comment/add-commentsRunner.js#L732-L816
           // In addition, the typescript parser will only recognize `// @ts-ignore` exactly, so it's not possible to ignore many errors in jsx.
           // https://github.com/Microsoft/TypeScript/issues/27552
+          // Try getting the node.getStart() position and see if it's on the same line
           return;
         }
 
