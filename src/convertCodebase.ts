@@ -11,6 +11,7 @@ import simplegit from "simple-git/promise";
 import collectFiles from "./collectFiles";
 import convert from "./converter";
 import { asyncForEach } from "./util";
+import commit from "commitAll";
 
 const filesFromArgs = (function() {
   const { file } = argv;
@@ -38,20 +39,7 @@ async function process() {
   console.log(`${errorFiles.length} errors:`);
   if (errorFiles.length) console.log(errorFiles);
   if (argv.commit) {
-    console.log("Committing changed files");
-    try {
-      await git.add(".");
-    } catch (e) {
-      console.log("error adding");
-      throw new Error(e);
-    }
-
-    try {
-      await git.commit("Convert files", undefined, { "-n": true });
-    } catch (e) {
-      console.log("error committing");
-      throw new Error(e);
-    }
+    await commit("Convert files");
 
     const renameErrors: string[] = [];
 
@@ -113,20 +101,8 @@ async function process() {
 
     console.log(`Snaps found: ${snapsFound.length}`);
     console.log(`Snaps Not found: ${snapsNotFound.length}`);
+    await commit("Rename files");
 
-    console.log("Committing renamed files");
-    try {
-      await git.add(".");
-    } catch (e) {
-      console.log("error adding");
-      throw new Error(e);
-    }
-    try {
-      await git.commit("Rename files", undefined, { "-n": true });
-    } catch (e) {
-      console.log("error committing");
-      throw new Error(e);
-    }
     console.log(`${successFiles.length} converted successfully.`);
     console.log(`${errorFiles.length} errors`);
     if (errorFiles.length) console.log(errorFiles);
