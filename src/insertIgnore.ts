@@ -4,7 +4,7 @@ import * as utils from "tsutils";
 import { NodeWrap } from "tsutils";
 
 const IGNORE_TEXT = "// @ts-ignore FIXME";
-const PRETTIER_IGNORE_TEXT = "// prettier-ignore";
+// const PRETTIER_IGNORE_TEXT = "// prettier-ignore";
 
 // JsxElement = 260,
 // JsxSelfClosingElement = 261,
@@ -113,16 +113,16 @@ export default function insertIgnore(
 
   codeSplitByLine.splice(line, 0, IGNORE_TEXT);
 
-  // TODO this causes semantic changes to the code
   /*
-        const foo = foo()
-          ? // @ts-ignore
-            error.here.is.not.ignored()
-          : bar();
-        */
-  // const inTernary = !!findParentKind(n, 205);
-  // if (inTernary) {
-  //   codeSplitByLine.splice(line, 0, PRETTIER_IGNORE_TEXT);
-  // }
+  const foo = foo()
+  ? // @ts-ignore
+  error.here.is.not.ignored()
+  : bar();
+  */
+  const inTernary = !!findParentKind(n, 205);
+  if (inTernary) {
+    // TODO this causes semantic changes to the code
+    // codeSplitByLine.splice(line, 0, PRETTIER_IGNORE_TEXT);
+  }
   return codeSplitByLine;
 }
