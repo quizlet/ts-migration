@@ -6,14 +6,19 @@ import path from "path";
 import collectFiles from "./collectFiles";
 import insertIgnore from "insertIgnore";
 import commit from "commitAll";
-import createTSCompiler from "./tsCompiler";
 import prettierFormat from "prettierFormat";
 
 const argv = require("minimist")(global.process.argv.slice(2));
 
 const rootDir = "../quizlet/";
 
-const { configJSON, compilerOptions } = createTSCompiler(rootDir);
+const fileName = `${rootDir}tsconfig.json`;
+const optionsFile = readFileSync(fileName, "utf8");
+const configJSON = ts.parseConfigFileTextToJson(fileName, optionsFile);
+const compilerOptions = ts.convertCompilerOptionsFromJson(
+  configJSON.config.compilerOptions,
+  rootDir
+);
 
 const successFiles: string[] = [];
 const errorFiles: string[] = [];

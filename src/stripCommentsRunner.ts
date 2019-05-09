@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 import ts from "typescript";
 import { readFileSync, writeFileSync } from "fs";
-import * as prettier from "prettier";
 import collectFiles from "./collectFiles";
 import { stripComments } from "./stripComments";
 import commit from "commitAll";
+import prettierFormat from "prettierFormat";
 
 const argv = require("minimist")(global.process.argv.slice(2));
 
@@ -24,7 +24,6 @@ const filePaths = {
   extensions: [".ts", ".tsx"]
 };
 
-const prettierConfig = prettier.resolveConfig.sync(rootDir);
 const flowComments = [
   "// @flow",
   "// $FlowFixMeImmutable",
@@ -46,10 +45,7 @@ export async function run(paths: any): Promise<void> {
       const code = readFileSync(filePath, "utf8");
 
       const fileData = stripComments(code, argv.comments || flowComments);
-      const formattedFileData = prettier.format(fileData, {
-        ...prettierConfig,
-        parser: "typescript"
-      });
+      const formattedFileData = prettierFormat(fileData, rootDir);
       writeFileSync(filePath, formattedFileData);
       successFiles.push(filePath);
     } catch (e) {

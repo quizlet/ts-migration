@@ -3,10 +3,10 @@ import * as babel from "@babel/core";
 // @ts-ignore
 import dynamicImport from "@babel/plugin-syntax-dynamic-import";
 import recast from "recast";
-import * as prettier from "prettier";
 import { writeFileSync } from "fs";
 import plugin from "./babel-plugin/index";
 import { asyncForEach } from "./util";
+import prettierFormat from "prettierFormat";
 
 function recastParse(
   code: string,
@@ -25,10 +25,7 @@ function recastParse(
 function buildRecastGenerate(rootDir: string = global.process.cwd()) {
   return function recastGenerate(ast: File): { code: string; map?: object } {
     const file = recast.print(ast);
-    file.code = prettier.format(file.code, {
-      ...prettier.resolveConfig.sync(rootDir),
-      parser: "typescript"
-    });
+    file.code = prettierFormat(file.code, rootDir);
     return file;
   };
 }
