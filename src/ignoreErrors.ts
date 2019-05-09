@@ -4,7 +4,7 @@ import { groupBy, uniqBy } from "lodash";
 import { readFileSync, writeFileSync, existsSync } from "fs";
 import path from "path";
 import collectFiles from "./collectFiles";
-import insertIgnore from "insertIgnore";
+import insertIgnore from "./insertIgnore";
 import commit from "./commitAll";
 import createTSCompiler from "./tsCompiler";
 import prettierFormat from "./prettierFormat";
