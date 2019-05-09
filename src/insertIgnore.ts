@@ -28,15 +28,15 @@ function findParentJSX(n: NodeWrap | undefined): [number, NodeWrap] | null {
   return null;
 }
 
-function findHighestLevelJSX(n: NodeWrap): NodeWrap {
-  // If there's no parent JSX, return self
-  // if there is, call this function
-  if (!findParentJSX(n)) {
-    return n;
-  } else {
-    return findHighestLevelJSX(n.parent!);
-  }
-}
+// function findHighestLevelJSX(n: NodeWrap): NodeWrap {
+//   // If there's no parent JSX, return self
+//   // if there is, call this function
+//   if (!findParentJSX(n)) {
+//     return n;
+//   } else {
+//     return findHighestLevelJSX(n.parent!);
+//   }
+// }
 
 function findParentKind(
   n: NodeWrap | undefined,
@@ -96,24 +96,24 @@ export default function insertIgnore(
       // codeSplitByLine.splice(line, 0, PRETTIER_IGNORE_TEXT);
       // split the line at the start of our error.
       // insert the ignores into the middle
-      const text = n.node.getFullText();
-      const lineText = codeSplitByLine[line];
-      const splitPoint = lineText.indexOf(text);
-      const part1 = lineText.substring(0, splitPoint);
-      const match = part1.match(/^ */);
-      const padding = match ? match[0] + "  " : "  ";
-      const part2 = padding + lineText.substring(splitPoint);
-      console.log({ line, lineText, text, splitPoint, part1, part2 });
-      const highestLevelJSX = findHighestLevelJSX(n);
-      const highestLevelJSXLine = getLine(diagnostic, highestLevelJSX.node.pos);
-      console.log({
-        highestLevelJSX: highestLevelJSX.node.getFullText(),
-        highestLevelJSXLine
-      });
-      console.log({
-        highestLevelJSX: highestLevelJSX.node.getFullText(),
-        highestLevelJSXLine
-      });
+      // const text = n.node.getFullText();
+      // const lineText = codeSplitByLine[line];
+      // const splitPoint = lineText.indexOf(text);
+      // const part1 = lineText.substring(0, splitPoint);
+      // const match = part1.match(/^ */);
+      // const padding = match ? match[0] + "  " : "  ";
+      // const part2 = padding + lineText.substring(splitPoint);
+      // console.log({ line, lineText, text, splitPoint, part1, part2 });
+      // const highestLevelJSX = findHighestLevelJSX(n);
+      // const highestLevelJSXLine = getLine(diagnostic, highestLevelJSX.node.pos);
+      // console.log({
+      //   highestLevelJSX: highestLevelJSX.node.getFullText(),
+      //   highestLevelJSXLine
+      // });
+      // console.log({
+      //   highestLevelJSX: highestLevelJSX.node.getFullText(),
+      //   highestLevelJSXLine
+      // });
       // codeSplitByLine[line] = part1;
       // codeSplitByLine.splice(line + 1, 0, part2);
       // codeSplitByLine.splice(line + 1, 0, padding + IGNORE_TEXT);
