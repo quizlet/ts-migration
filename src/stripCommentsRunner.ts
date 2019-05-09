@@ -3,8 +3,8 @@ import ts from "typescript";
 import { readFileSync, writeFileSync } from "fs";
 import collectFiles from "./collectFiles";
 import { stripComments } from "./stripComments";
-import commit from "commitAll";
-import prettierFormat from "prettierFormat";
+import commit from "./commitAll";
+import prettierFormat from "./prettierFormat";
 
 const argv = require("minimist")(global.process.argv.slice(2));
 

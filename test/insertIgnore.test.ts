@@ -50,29 +50,23 @@ const Quizlet = {
 };
 
 function SingleLine() {
-  return <div>{Quizlet.
-    // prettier-ignore
-    // @ts-ignore FIXME
-    doesNotExist && <div className=\\"test\\" />}</div>;
+  return <div>{Quizlet.doesNotExist && <div className=\\"test\\" />}</div>;
 }
 
 SingleLine();
 
-function MultiLine() {
-  return (
-    <div
-      style={{}}
-      className=\\"long class name so the expression is on the next line\\"
-    >
-      {Quizlet.
-        // prettier-ignore
-        // @ts-ignore FIXME
-        doesNotExist && <div className=\\"test\\" />}
-    </div>
-  );
-}
+// function MultiLine() {
+//   return (
+//     <div
+//       style={{}}
+//       className=\\"long class name so the expression is on the next line\\"
+//     >
+//       {Quizlet.doesNotExist && <div className=\\"test\\" />}
+//     </div>
+//   );
+// }
 
-MultiLine();
+// MultiLine();
 "
 `);
   });

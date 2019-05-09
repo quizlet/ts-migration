@@ -6,7 +6,7 @@ import recast from "recast";
 import { writeFileSync } from "fs";
 import plugin from "./babel-plugin/index";
 import { asyncForEach } from "./util";
-import prettierFormat from "prettierFormat";
+import prettierFormat from "./prettierFormat";
 
 function recastParse(
   code: string,

@@ -5,9 +5,9 @@ import { readFileSync, writeFileSync, existsSync } from "fs";
 import path from "path";
 import collectFiles from "./collectFiles";
 import insertIgnore from "insertIgnore";
-import commit from "commitAll";
+import commit from "./commitAll";
 import createTSCompiler from "./tsCompiler";
-import prettierFormat from "prettierFormat";
+import prettierFormat from "./prettierFormat";
 
 const argv = require("minimist")(global.process.argv.slice(2));
 

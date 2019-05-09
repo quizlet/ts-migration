@@ -11,7 +11,7 @@ import simplegit from "simple-git/promise";
 import collectFiles from "./collectFiles";
 import convert from "./converter";
 import { asyncForEach } from "./util";
-import commit from "commitAll";
+import commit from "./commitAll";
 
 const filesFromArgs = (function() {
   const { file } = argv;
