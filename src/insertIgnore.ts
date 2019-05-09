@@ -69,8 +69,8 @@ export default function insertIgnore(
     diagnostic.start!
   );
   const line = getLine(diagnostic);
-  console.log(diagnostic.messageText);
-  console.log(n!.node.getFullText());
+  // console.log(diagnostic.messageText);
+  // console.log(n!.node.getFullText());
 
   const jsx = findParentJSX(n);
   if (jsx && n) {
