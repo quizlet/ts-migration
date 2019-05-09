@@ -16,10 +16,6 @@ const git = simplegit(rootDir);
 const fileName = `${rootDir}tsconfig.json`;
 const optionsFile = readFileSync(fileName, "utf8");
 const configJSON = ts.parseConfigFileTextToJson(fileName, optionsFile);
-const compilerOptions = ts.convertCompilerOptionsFromJson(
-  configJSON.config.compilerOptions,
-  rootDir
-);
 
 const successFiles: string[] = [];
 const errorFiles: string[] = [];
@@ -27,32 +23,41 @@ const errorFiles: string[] = [];
 const filePaths = {
   rootDir,
   include: configJSON.config.include,
-  exclude: [],
+  exclude: ["/vendor/", "i18n/findMessageAndLocale"],
   extensions: [".ts", ".tsx"]
 };
 
 const prettierConfig = prettier.resolveConfig.sync(rootDir);
+const flowComments = [
+  "// @flow",
+  "// $FlowFixMeImmutable",
+  "// $FlowFixMe",
+  "// @noflow"
+];
 
-export async function run(
-  paths: any,
-  options: ts.CompilerOptions
-): Promise<void> {
-  const files = await collectFiles(paths);
+const filesFromArgs = (function(): string[] | undefined {
+  const { file } = argv;
+  if (!file) return undefined;
+  return Array.isArray(file) ? file : [file];
+})();
+
+export async function run(paths: any): Promise<void> {
+  const files = filesFromArgs || (await collectFiles(paths));
 
   files.forEach(filePath => {
     try {
       const code = readFileSync(filePath, "utf8");
 
-      const fileData = stripComments(code, argv.comments);
+      const fileData = stripComments(code, argv.comments || flowComments);
       const formattedFileData = prettier.format(fileData, {
         ...prettierConfig,
         parser: "typescript"
       });
       writeFileSync(filePath, formattedFileData);
-      successFiles.push(fileName);
+      successFiles.push(filePath);
     } catch (e) {
       console.log(e);
-      errorFiles.push(fileName);
+      errorFiles.push(filePath);
     }
   });
 
@@ -65,20 +70,17 @@ export async function run(
       throw new Error(e);
     }
     try {
-      await git.commit("Ignore errors", undefined, { "-n": true });
+      await git.commit("Strip comments", undefined, { "-n": true });
     } catch (e) {
       console.log("error committing");
       throw new Error(e);
     }
   }
 
-  console.log(`${successFiles.length} files with errors ignored successfully.`);
+  console.log(
+    `${successFiles.length} files with comments stripped successfully.`
+  );
   console.log(`${errorFiles.length} errors:`);
   console.log(errorFiles);
-  const finalProgram = ts.createProgram(files, options);
-  const finalDiagnostics = ts
-    .getPreEmitDiagnostics(finalProgram)
-    .filter(d => !!d.file);
-  console.log("Errors remaining after ignoring: ", finalDiagnostics.length);
 }
-run(filePaths, compilerOptions.options);
+run(filePaths);

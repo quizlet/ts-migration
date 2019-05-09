@@ -18,7 +18,8 @@
     "build": "tsc",
     "watch": "tsc --watch",
     "convert-codebase": "node -r ts-node/register --inspect src/convertCodebase.ts",
-    "ignore-errors": "node -r ts-node/register --inspect ./src/ignoreErrors.ts"
+    "ignore-errors": "node -r ts-node/register --inspect ./src/ignoreErrors.ts",
+    "strip-comments": "node -r ts-node/register --inspect ./src/stripCommentsRunner.ts"
   },
   "keywords": [
     "babel",

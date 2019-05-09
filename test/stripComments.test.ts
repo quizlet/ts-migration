@@ -9,6 +9,8 @@ instance.file = { name: 'error.csv' };
 // $FlowFixMe bad typedef
 foo()
 
+const bar = undefined;
+
 return {
     audioId: getAudioIdFromTerm(term, termSide),
     url:
@@ -32,6 +34,9 @@ describe("stripComments", () => {
   it("should retain any code before the comment", () => {
     expect(stripComments(testCode, ["// $FlowFixMeImmutable"])).toContain("?");
   });
+  it("should preserve 'undefined'", () => {
+    expect(stripComments(testCode, ["// $FlowFixMeImmutable"])).toContain("?");
+  });
   it("should strip all at once", () => {
     expect(
       stripComments(testCode, [
@@ -39,6 +44,6 @@ describe("stripComments", () => {
         "// $FlowFixMeImmutable",
         "// $FlowFixMe"
       ])
-    ).toContain("?");
+    ).toMatchSnapshot();
   });
 });

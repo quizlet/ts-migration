@@ -3,18 +3,19 @@ export function stripComments(code: string, comments: string[]) {
 
   const res = codeSplitByLine.reduce(
     (acc, line: string) => {
-      if (!comments.some(c => line.includes(c))) {
+      if (comments.some(c => line.includes(c))) {
+        const matchedComment = comments.find(c => line.includes(c))!;
+        const matchedIndex = line.indexOf(matchedComment);
+        if (matchedIndex > 0) {
+          acc.push(line.slice(0, matchedIndex));
+        }
+      } else {
         acc.push(line);
-      }
-      const matchedComment = comments.find(c => line.includes(c))!;
-      const matchedIndex = line.indexOf(matchedComment);
-      if (matchedIndex > 0) {
-        acc.push(line.slice(0, matchedIndex));
       }
       return acc;
     },
     [] as string[]
   );
 
-  return res.join("/n");
+  return res.join("\n");
 }
