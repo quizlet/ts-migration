@@ -1,7 +1,4 @@
-#!/usr/bin/env node
 import pathUtils from "path";
-
-const argv = require("minimist")(global.process.argv.slice(2));
 
 import fs from "fs";
 
@@ -16,7 +13,7 @@ import commit from "./commitAll";
 const exists = promisify(fs.exists);
 
 export default async function process(
-  filePaths: FilePath,
+  filePaths: any,
   shouldCommit: boolean,
   filesFromCLI: string[] | undefined
 ) {

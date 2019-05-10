@@ -1,17 +1,14 @@
-#!/usr/bin/env node
 import { groupBy } from "lodash";
 import { readFileSync, writeFileSync } from "fs";
 import commit from "./commitAll";
 import { getDiagnostics, getFilePath } from "./tsCompilerHelpers";
-
-const argv = require("minimist")(global.process.argv.slice(2));
 
 export const ERROR_COMMENT = "// @quizlet-ts-ignore-errors:";
 
 const successFiles: string[] = [];
 const errorFiles: string[] = [];
 
-async function run(): Promise<void> {
+export default async function run(shouldCommit: boolean): Promise<void> {
   const diagnostics = await getDiagnostics();
   const diagnosticsWithFile = diagnostics.filter(d => !!d.file);
   const diagnosticsGroupedByFile = groupBy(
@@ -39,7 +36,7 @@ async function run(): Promise<void> {
     }
   });
 
-  if (argv.commit) {
+  if (shouldCommit) {
     await commit("Ignore File Errors");
   }
 
@@ -47,4 +44,3 @@ async function run(): Promise<void> {
   console.log(`${errorFiles.length} errors:`);
   console.log(errorFiles);
 }
-run();

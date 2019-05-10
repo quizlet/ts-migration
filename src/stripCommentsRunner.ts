@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import { readFileSync, writeFileSync } from "fs";
 import collectFiles from "./collectFiles";
 import { stripComments } from "./stripComments";
@@ -24,7 +23,7 @@ const filesFromArgs = (function(): string[] | undefined {
 })();
 
 export default async function run(
-  paths: FilePath,
+  paths: any,
   shouldComit: boolean
 ): Promise<void> {
   const files = filesFromArgs || (await collectFiles(paths));

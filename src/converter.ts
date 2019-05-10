@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import * as babel from "@babel/core";
 // @ts-ignore
 import dynamicImport from "@babel/plugin-syntax-dynamic-import";

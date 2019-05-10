@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import { groupBy, uniqBy } from "lodash";
 import { readFileSync, writeFileSync } from "fs";
 import insertIgnore from "./insertIgnore";
@@ -6,14 +5,13 @@ import commit from "./commitAll";
 import prettierFormat from "./prettierFormat";
 import { getFilePath, getDiagnostics } from "./tsCompilerHelpers";
 
-const argv = require("minimist")(global.process.argv.slice(2));
-
-const rootDir = "../quizlet/";
-
 const successFiles: string[] = [];
 const errorFiles: string[] = [];
 
-async function compile(): Promise<void> {
+export default async function compile(
+  rootDir: string,
+  shouldCommit: boolean
+): Promise<void> {
   const diagnostics = await getDiagnostics();
   const diagnosticsWithFile = diagnostics.filter(d => !!d.file);
   const diagnosticsGroupedByFile = groupBy(
@@ -46,7 +44,7 @@ async function compile(): Promise<void> {
     }
   });
 
-  if (argv.commit) {
+  if (shouldCommit) {
     await commit("Ignore errors");
   }
 
@@ -54,4 +52,3 @@ async function compile(): Promise<void> {
   console.log(`${errorFiles.length} errors:`);
   console.log(errorFiles);
 }
-compile();

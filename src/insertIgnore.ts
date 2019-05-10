@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import ts from "typescript";
 import * as utils from "tsutils";
 import { NodeWrap } from "tsutils";

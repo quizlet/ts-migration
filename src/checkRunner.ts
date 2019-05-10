@@ -1,10 +1,8 @@
-#!/usr/bin/env node
 import ts from "typescript";
 import { groupBy, partition } from "lodash";
 import { readFileSync } from "fs";
 import { getDiagnostics, getFilePath } from "./tsCompilerHelpers";
-
-const ERROR_COMMENT = "// @quizlet-ts-ignore-errors:";
+import { ERROR_COMMENT } from "./ignoreFileErrorsRunner";
 
 const errorFiles: string[] = [];
 const errorsToShow: ts.Diagnostic[] = [];
@@ -15,7 +13,7 @@ const filesWithTooManyIgnoredErrors: {
 }[] = [];
 let skippedErrorCount = 0;
 
-async function run(): Promise<void> {
+export default async function run(): Promise<void> {
   const diagnostics = await getDiagnostics();
   const [diagnosticsWithFile, diagnosticsWithoutFile] = partition(
     diagnostics,
@@ -108,4 +106,3 @@ async function run(): Promise<void> {
     }
   }
 }
-run();

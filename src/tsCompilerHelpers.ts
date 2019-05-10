@@ -1,12 +1,11 @@
-#!/usr/bin/env node
 import ts from "typescript";
 import { readFileSync, existsSync } from "fs";
 
 import path from "path";
 import collectFiles from "./collectFiles";
 
+// TODO all this should be passed in from the runner
 const rootDir = "../quizlet/";
-
 const configFilePath = `${rootDir}tsconfig.json`;
 const optionsFile = readFileSync(configFilePath, "utf8");
 const configJSON = ts.parseConfigFileTextToJson(configFilePath, optionsFile);
