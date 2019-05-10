@@ -27,16 +27,22 @@ const filePaths = {
   rootDir,
   include: configJSON.config.include,
   exclude: [
-    "app/j/utils/ModeHelper.js" // adding ts-ignore causes lint errors
+    "app/j/utils/ModeHelper" // adding ts-ignore causes lint errors
   ],
   extensions: [".ts", ".tsx"]
 };
 
 async function compile(paths: any, options: ts.CompilerOptions): Promise<void> {
   const files = await collectFiles(paths);
+  console.log(files.filter(f => f.includes("app/j/utils/M")));
   const program = ts.createProgram(files, options);
 
-  const diagnostics = ts.getPreEmitDiagnostics(program).filter(d => !!d.file);
+  const diagnostics = ts
+    .getPreEmitDiagnostics(program)
+    .filter(
+      d =>
+        !!d.file && !filePaths.exclude.some(f => d.file!.fileName.includes(f))
+    );
 
   const diagnosticsGroupedByFile = groupBy(diagnostics, d => d.file!.fileName);
   Object.keys(diagnosticsGroupedByFile).forEach(async (fileName, i, arr) => {
@@ -79,10 +85,5 @@ async function compile(paths: any, options: ts.CompilerOptions): Promise<void> {
   console.log(`${successFiles.length} files with errors ignored successfully.`);
   console.log(`${errorFiles.length} errors:`);
   console.log(errorFiles);
-  const finalProgram = ts.createProgram(files, options);
-  const finalDiagnostics = ts
-    .getPreEmitDiagnostics(finalProgram)
-    .filter(d => !!d.file);
-  console.log("Errors remaining after ignoring: ", finalDiagnostics.length);
 }
 compile(filePaths, compilerOptions.options);
