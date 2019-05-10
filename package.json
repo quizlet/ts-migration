@@ -19,7 +19,9 @@
     "watch": "tsc --watch",
     "convert-codebase": "node -r ts-node/register --inspect src/convertCodebase.ts",
     "ignore-errors": "node -r ts-node/register --inspect ./src/ignoreErrorsRunner.ts",
-    "strip-comments": "node -r ts-node/register --inspect ./src/stripCommentsRunner.ts"
+    "strip-comments": "node -r ts-node/register --inspect ./src/stripCommentsRunner.ts",
+    "ignore-file-errors": "node -r ts-node/register --inspect ./src/ignoreFileErrorsRunner.ts",
+    "check-types": "node -r ts-node/register --inspect ./src/checkRunner.ts"
   },
   "keywords": [
     "babel",
