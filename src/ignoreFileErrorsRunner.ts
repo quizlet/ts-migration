@@ -2,7 +2,7 @@
 import { groupBy } from "lodash";
 import { readFileSync, writeFileSync } from "fs";
 import commit from "./commitAll";
-import { getDiagnostics, getFilePath } from "./tsHelpers";
+import { getDiagnostics, getFilePath } from "./tsCompilerHelpers";
 
 const argv = require("minimist")(global.process.argv.slice(2));
 

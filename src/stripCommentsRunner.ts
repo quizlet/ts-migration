@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import ts from "typescript";
 import { readFileSync, writeFileSync } from "fs";
 import collectFiles from "./collectFiles";
 import { stripComments } from "./stripComments";
@@ -8,21 +7,8 @@ import prettierFormat from "./prettierFormat";
 
 const argv = require("minimist")(global.process.argv.slice(2));
 
-const rootDir = "../quizlet/";
-
-const fileName = `${rootDir}tsconfig.json`;
-const optionsFile = readFileSync(fileName, "utf8");
-const configJSON = ts.parseConfigFileTextToJson(fileName, optionsFile);
-
 const successFiles: string[] = [];
 const errorFiles: string[] = [];
-
-const filePaths = {
-  rootDir,
-  include: configJSON.config.include,
-  exclude: ["/vendor/", "i18n/findMessageAndLocale"],
-  extensions: [".ts", ".tsx"]
-};
 
 const flowComments = [
   "// @flow",
@@ -37,7 +23,10 @@ const filesFromArgs = (function(): string[] | undefined {
   return Array.isArray(file) ? file : [file];
 })();
 
-export async function run(paths: any): Promise<void> {
+export default async function run(
+  paths: FilePath,
+  shouldComit: boolean
+): Promise<void> {
   const files = filesFromArgs || (await collectFiles(paths));
 
   files.forEach(filePath => {
@@ -45,7 +34,7 @@ export async function run(paths: any): Promise<void> {
       const code = readFileSync(filePath, "utf8");
 
       const fileData = stripComments(code, argv.comments || flowComments);
-      const formattedFileData = prettierFormat(fileData, rootDir);
+      const formattedFileData = prettierFormat(fileData, paths.rootDir);
       writeFileSync(filePath, formattedFileData);
       successFiles.push(filePath);
     } catch (e) {
@@ -54,7 +43,7 @@ export async function run(paths: any): Promise<void> {
     }
   });
 
-  if (argv.commit) {
+  if (shouldComit) {
     await commit(`Strip comments`);
   }
 
@@ -64,4 +53,3 @@ export async function run(paths: any): Promise<void> {
   console.log(`${errorFiles.length} errors:`);
   console.log(errorFiles);
 }
-run(filePaths);

@@ -4,7 +4,7 @@ import { readFileSync, writeFileSync } from "fs";
 import insertIgnore from "./insertIgnore";
 import commit from "./commitAll";
 import prettierFormat from "./prettierFormat";
-import { getFilePath, getDiagnostics } from "./diagnostics";
+import { getFilePath, getDiagnostics } from "./tsCompilerHelpers";
 
 const argv = require("minimist")(global.process.argv.slice(2));
 

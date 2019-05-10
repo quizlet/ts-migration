@@ -3,7 +3,7 @@ import ts from "typescript";
 import path from "path";
 
 import insertIgnore from "../src/insertIgnore";
-import { createTSCompiler } from "../src/tsHelpers";
+import { createTSCompiler } from "../src/tsCompilerHelpers";
 
 const { compilerOptions } = createTSCompiler(path.join(__dirname, "../"));
 

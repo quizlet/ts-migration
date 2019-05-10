@@ -13,24 +13,16 @@ import convert from "./converter";
 import { asyncForEach } from "./util";
 import commit from "./commitAll";
 
-const filesFromArgs = (function() {
-  const { file } = argv;
-  if (!file) return undefined;
-  return Array.isArray(file) ? file : [file];
-})();
-
-const filePaths = {
-  rootDir: "../quizlet/",
-  include: ["app/j", "stories"],
-  exclude: ["/vendor/", "i18n/findMessageAndLocale"],
-  extensions: [".js", ".jsx"]
-};
-const git = simplegit(filePaths.rootDir);
-
 const exists = promisify(fs.exists);
 
-async function process() {
-  const files = filesFromArgs || (await collectFiles(filePaths));
+export default async function process(
+  filePaths: FilePath,
+  shouldCommit: boolean,
+  filesFromCLI: string[] | undefined
+) {
+  const git = simplegit(filePaths.rootDir);
+
+  const files = filesFromCLI || (await collectFiles(filePaths));
 
   console.log(`Converting ${files.length} files`);
   const { successFiles, errorFiles } = await convert(files, filePaths.rootDir);
@@ -38,7 +30,7 @@ async function process() {
   console.log(`${successFiles.length} converted successfully.`);
   console.log(`${errorFiles.length} errors:`);
   if (errorFiles.length) console.log(errorFiles);
-  if (argv.commit) {
+  if (shouldCommit) {
     await commit("Convert files");
 
     const renameErrors: string[] = [];
@@ -110,5 +102,3 @@ async function process() {
     console.log("skipping commit in dry run mode");
   }
 }
-
-process();

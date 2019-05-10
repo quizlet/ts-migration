@@ -2,7 +2,7 @@
 import ts from "typescript";
 import { groupBy, partition } from "lodash";
 import { readFileSync } from "fs";
-import { getDiagnostics, getFilePath } from "./tsHelpers";
+import { getDiagnostics, getFilePath } from "./tsCompilerHelpers";
 
 const ERROR_COMMENT = "// @quizlet-ts-ignore-errors:";
 
