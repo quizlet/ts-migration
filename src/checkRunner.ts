@@ -1,21 +1,10 @@
 #!/usr/bin/env node
 import ts from "typescript";
-import { groupBy } from "lodash";
-import { readFileSync, existsSync } from "fs";
-import path from "path";
-import collectFiles from "./collectFiles";
+import { groupBy, partition } from "lodash";
+import { readFileSync } from "fs";
+import { getDiagnostics, getFilePath } from "./tsHelpers";
 
 const ERROR_COMMENT = "// @quizlet-ts-ignore-errors:";
-
-const rootDir = "../quizlet/";
-
-const fileName = `${rootDir}tsconfig.json`;
-const optionsFile = readFileSync(fileName, "utf8");
-const configJSON = ts.parseConfigFileTextToJson(fileName, optionsFile);
-const compilerOptions = ts.convertCompilerOptionsFromJson(
-  configJSON.config.compilerOptions,
-  rootDir
-);
 
 const errorFiles: string[] = [];
 const errorsToShow: ts.Diagnostic[] = [];
@@ -26,34 +15,24 @@ const filesWithTooManyIgnoredErrors: {
 }[] = [];
 let skippedErrorCount = 0;
 
-const filePaths = {
-  rootDir,
-  include: configJSON.config.include,
-  exclude: [],
-  extensions: [".ts", ".tsx"]
-};
+async function run(): Promise<void> {
+  const diagnostics = await getDiagnostics();
+  const [diagnosticsWithFile, diagnosticsWithoutFile] = partition(
+    diagnostics,
+    d => !!d.file
+  );
+  errorsToShow.push(...diagnosticsWithoutFile);
 
-async function compile(paths: any, options: ts.CompilerOptions): Promise<void> {
-  const files = await collectFiles(paths);
+  const diagnosticsGroupedByFile = groupBy(
+    diagnosticsWithFile,
+    d => d.file!.fileName
+  );
 
-  const program = ts.createProgram(files, options);
-
-  const diagnostics = ts.getPreEmitDiagnostics(program).filter(d => !!d.file);
-
-  const diagnosticsGroupedByFile = groupBy(diagnostics, d => d.file!.fileName);
   Object.keys(diagnosticsGroupedByFile).forEach(async fileName => {
     const fileDiagnostics = diagnosticsGroupedByFile[fileName];
     const actualErrorCount = fileDiagnostics.length;
     try {
-      let filePath = path.join(rootDir, fileName);
-      if (!existsSync(filePath)) {
-        filePath = fileName;
-        if (!existsSync(filePath)) {
-          console.log(`${filePath} does not exist`);
-          errorFiles.push(filePath);
-          return;
-        }
-      }
+      const filePath = getFilePath(fileDiagnostics[0]);
 
       let codeSplitByLine = readFileSync(filePath, "utf8").split("\n");
       const firstLine = codeSplitByLine[0];
@@ -83,11 +62,9 @@ async function compile(paths: any, options: ts.CompilerOptions): Promise<void> {
       console.log(e);
       errorFiles.push(fileName);
     }
-
-    errorsToShow.push(
-      ...ts.getPreEmitDiagnostics(program).filter(d => !d.file)
-    );
   });
+
+  // Something went wrong
   if (errorFiles.length) {
     console.log(
       `Error checking for ignored type errors in ${errorFiles.length} files:`
@@ -95,6 +72,7 @@ async function compile(paths: any, options: ts.CompilerOptions): Promise<void> {
     console.log(errorFiles);
     process.exit(1);
   } else {
+    // There were type errors
     if (errorsToShow.length || filesWithTooManyIgnoredErrors.length) {
       if (errorsToShow.length) {
         const system = ts.sys;
@@ -108,6 +86,8 @@ async function compile(paths: any, options: ts.CompilerOptions): Promise<void> {
         );
         console.log(`Found ${errorsToShow.length} type error(s). `);
       }
+
+      // There were issues with the # of ignored errors
       if (filesWithTooManyIgnoredErrors.length) {
         filesWithTooManyIgnoredErrors.forEach(f => {
           console.log(
@@ -121,10 +101,11 @@ async function compile(paths: any, options: ts.CompilerOptions): Promise<void> {
       }
       process.exit(1);
     } else {
+      // Everything is great
       console.log("No (non-ignored) type errors");
       console.log(`Skipping ${skippedErrorCount} ignored errors`);
       process.exit(0);
     }
   }
 }
-compile(filePaths, compilerOptions.options);
+run();
