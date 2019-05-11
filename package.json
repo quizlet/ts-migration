@@ -7,7 +7,8 @@
     "email": "roger.goldfinger@quizlet.com",
     "url": "https://github.com/rgoldfinger-quizlet/babel-plugin-flow-to-typescript"
   },
-  "bin": "dist/index.js",
+  "bin": "index.js",
+  "main": "index.js",
   "files": [
     "dist",
     "README.md"
@@ -25,7 +26,6 @@
     "flow",
     "typescript"
   ],
-  "main": "dist/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/rgoldfinger-quizlet/babel-plugin-flow-to-typescript.git"
