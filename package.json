@@ -1,12 +1,13 @@
 {
-  "name": "@steelbrain/babel-plugin-flow-to-typescript",
-  "description": "Babel plugin to convert Flow into TypeScript",
+  "name": "ts-tools",
+  "description": "Tools to convert a codebase from Flow to Typescript",
   "license": "MIT",
   "author": {
-    "name": "Yuichiro Kikura",
-    "email": "y.kikura@gmail.com",
-    "url": "https://github.com/Kiikurage"
+    "name": "Roger Goldfinger",
+    "email": "roger.goldfinger@quizlet.com",
+    "url": "https://github.com/rgoldfinger-quizlet/babel-plugin-flow-to-typescript"
   },
+  "bin": "dist/index.js",
   "files": [
     "dist",
     "README.md"
@@ -27,7 +28,7 @@
   "main": "dist/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Kiikurage/babel-plugin-flow-to-typescript.git"
+    "url": "https://github.com/rgoldfinger-quizlet/babel-plugin-flow-to-typescript.git"
   },
   "peerDependencies": {
     "@babel/core": "^7.2.2"

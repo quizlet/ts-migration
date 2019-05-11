@@ -4,4 +4,3 @@ node_modules
 .idea
 *.log
 __snapshots__
-/yarn.lock
