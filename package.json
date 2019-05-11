@@ -17,11 +17,7 @@
     "test-watch": "jest --watch",
     "build": "tsc",
     "watch": "tsc --watch",
-    "convert-codebase": "node -r ts-node/register --inspect src/convertCodebase.ts",
-    "ignore-errors": "node -r ts-node/register --inspect ./src/ignoreErrorsRunner.ts",
-    "strip-comments": "node -r ts-node/register --inspect ./src/stripCommentsRunner.ts",
-    "ignore-file-errors": "node -r ts-node/register --inspect ./src/ignoreFileErrorsRunner.ts",
-    "check-types": "node -r ts-node/register --inspect ./src/checkRunner.ts"
+    "run-dev": "node -r ts-node/register --inspect src/index.ts"
   },
   "keywords": [
     "babel",

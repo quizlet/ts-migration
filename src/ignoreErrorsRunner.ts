@@ -49,6 +49,8 @@ export default async function compile(
   }
 
   console.log(`${successFiles.length} files with errors ignored successfully.`);
-  console.log(`${errorFiles.length} errors:`);
-  console.log(errorFiles);
+  if (errorFiles.length) {
+    console.log(`Error handling ${errorFiles.length} files:`);
+    console.log(errorFiles);
+  }
 }

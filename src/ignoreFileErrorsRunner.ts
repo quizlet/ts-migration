@@ -41,6 +41,10 @@ export default async function run(shouldCommit: boolean): Promise<void> {
   }
 
   console.log(`${successFiles.length} files with errors ignored successfully.`);
-  console.log(`${errorFiles.length} errors:`);
-  console.log(errorFiles);
+  if (errorFiles.length) {
+    console.log(
+      `Error checking for ignored type errors in ${errorFiles.length} files:`
+    );
+    console.log(errorFiles);
+  }
 }

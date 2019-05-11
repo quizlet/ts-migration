@@ -61,7 +61,7 @@ program
 program
   .command("check-types")
   .option("-c, --commit")
-  .action((cmd: { commit: boolean | undefined }) => {
+  .action(() => {
     checkTypes();
   });
 

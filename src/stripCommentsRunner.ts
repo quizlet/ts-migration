@@ -49,6 +49,8 @@ export default async function run(
   console.log(
     `${successFiles.length} files with comments stripped successfully.`
   );
-  console.log(`${errorFiles.length} errors:`);
-  console.log(errorFiles);
+  if (errorFiles.length) {
+    console.log(`Error stripping comments in ${errorFiles.length} files:`);
+    console.log(errorFiles);
+  }
 }
