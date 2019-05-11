@@ -9,11 +9,12 @@ import collectFiles from "./collectFiles";
 import convert from "./converter";
 import { asyncForEach } from "./util";
 import commit from "./commitAll";
+import { FilePaths } from "./index";
 
 const exists = promisify(fs.exists);
 
 export default async function process(
-  filePaths: any,
+  filePaths: FilePaths,
   shouldCommit: boolean,
   filesFromCLI: string[] | undefined
 ) {

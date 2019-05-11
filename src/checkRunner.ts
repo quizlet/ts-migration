@@ -3,6 +3,7 @@ import { groupBy, partition } from "lodash";
 import { readFileSync } from "fs";
 import { getDiagnostics, getFilePath } from "./tsCompilerHelpers";
 import { ERROR_COMMENT } from "./ignoreFileErrorsRunner";
+import { FilePaths } from "./index";
 
 const errorFiles: string[] = [];
 const errorsToShow: ts.Diagnostic[] = [];
@@ -13,8 +14,8 @@ const filesWithTooManyIgnoredErrors: {
 }[] = [];
 let skippedErrorCount = 0;
 
-export default async function run(): Promise<void> {
-  const diagnostics = await getDiagnostics();
+export default async function run(paths: FilePaths): Promise<void> {
+  const diagnostics = await getDiagnostics(paths);
   const [diagnosticsWithFile, diagnosticsWithoutFile] = partition(
     diagnostics,
     d => !!d.file
@@ -30,7 +31,7 @@ export default async function run(): Promise<void> {
     const fileDiagnostics = diagnosticsGroupedByFile[fileName];
     const actualErrorCount = fileDiagnostics.length;
     try {
-      const filePath = getFilePath(fileDiagnostics[0]);
+      const filePath = getFilePath(paths, fileDiagnostics[0]);
 
       let codeSplitByLine = readFileSync(filePath, "utf8").split("\n");
       const firstLine = codeSplitByLine[0];
@@ -47,8 +48,6 @@ export default async function run(): Promise<void> {
             filePath
           });
         } else if (countToIgnore !== actualErrorCount) {
-          console.log("different!");
-          console.log({ countToIgnore, actualErrorCount });
           errorsToShow.push(...fileDiagnostics);
         } else {
           skippedErrorCount += countToIgnore;

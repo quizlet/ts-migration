@@ -4,16 +4,19 @@ import insertIgnore from "./insertIgnore";
 import commit from "./commitAll";
 import prettierFormat from "./prettierFormat";
 import { getFilePath, getDiagnostics } from "./tsCompilerHelpers";
+import { FilePaths } from "./index";
 
 const successFiles: string[] = [];
 const errorFiles: string[] = [];
 
 export default async function compile(
-  rootDir: string,
+  paths: FilePaths,
   shouldCommit: boolean
 ): Promise<void> {
-  const diagnostics = await getDiagnostics();
-  const diagnosticsWithFile = diagnostics.filter(d => !!d.file);
+  const diagnostics = await getDiagnostics(paths);
+  const diagnosticsWithFile = diagnostics.filter(
+    d => !!d.file && !!paths.exclude.some(e => d.file!.fileName.includes(e))
+  );
   const diagnosticsGroupedByFile = groupBy(
     diagnosticsWithFile,
     d => d.file!.fileName
@@ -29,13 +32,13 @@ export default async function compile(
       } ts-error(s) in ${fileName}`
     );
     try {
-      const filePath = getFilePath(fileDiagnostics[0]);
+      const filePath = getFilePath(paths, fileDiagnostics[0]);
       let codeSplitByLine = readFileSync(filePath, "utf8").split("\n");
       fileDiagnostics.forEach((diagnostic, _errorIndex) => {
         codeSplitByLine = insertIgnore(diagnostic, codeSplitByLine);
       });
       const fileData = codeSplitByLine.join("\n");
-      const formattedFileData = prettierFormat(fileData, rootDir);
+      const formattedFileData = prettierFormat(fileData, paths.rootDir);
       writeFileSync(filePath, formattedFileData);
       successFiles.push(fileName);
     } catch (e) {

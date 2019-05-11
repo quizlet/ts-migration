@@ -2,14 +2,18 @@ import { groupBy } from "lodash";
 import { readFileSync, writeFileSync } from "fs";
 import commit from "./commitAll";
 import { getDiagnostics, getFilePath } from "./tsCompilerHelpers";
+import { FilePaths } from "./index";
 
 export const ERROR_COMMENT = "// @quizlet-ts-ignore-errors:";
 
 const successFiles: string[] = [];
 const errorFiles: string[] = [];
 
-export default async function run(shouldCommit: boolean): Promise<void> {
-  const diagnostics = await getDiagnostics();
+export default async function run(
+  paths: FilePaths,
+  shouldCommit: boolean
+): Promise<void> {
+  const diagnostics = await getDiagnostics(paths);
   const diagnosticsWithFile = diagnostics.filter(d => !!d.file);
   const diagnosticsGroupedByFile = groupBy(
     diagnosticsWithFile,
@@ -24,7 +28,7 @@ export default async function run(shouldCommit: boolean): Promise<void> {
       } ts-error(s) in ${fileName}`
     );
     try {
-      const filePath = getFilePath(fileDiagnostics[0]);
+      const filePath = getFilePath(paths, fileDiagnostics[0]);
       let codeSplitByLine = readFileSync(filePath, "utf8").split("\n");
       codeSplitByLine.unshift(`${ERROR_COMMENT}${fileDiagnostics.length}`);
       const fileData = codeSplitByLine.join("\n");

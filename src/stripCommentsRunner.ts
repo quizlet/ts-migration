@@ -3,6 +3,7 @@ import collectFiles from "./collectFiles";
 import { stripComments } from "./stripComments";
 import commit from "./commitAll";
 import prettierFormat from "./prettierFormat";
+import { FilePaths } from "./index";
 
 const argv = require("minimist")(global.process.argv.slice(2));
 
@@ -23,7 +24,7 @@ const filesFromArgs = (function(): string[] | undefined {
 })();
 
 export default async function run(
-  paths: any,
+  paths: FilePaths,
   shouldComit: boolean
 ): Promise<void> {
   const files = filesFromArgs || (await collectFiles(paths));

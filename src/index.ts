@@ -1,5 +1,5 @@
 import program from "commander";
-import createTSCompiler from "./tsCompilerHelpers";
+import { createTSCompiler } from "./tsCompilerHelpers";
 import stripComments from "./stripCommentsRunner";
 import ignoreErrors from "./ignoreErrorsRunner";
 import ignoreFileErrors from "./ignoreFileErrorsRunner";
@@ -10,7 +10,14 @@ const rootDir = "../quizlet/";
 
 const { configJSON } = createTSCompiler(rootDir);
 
-const filePaths = {
+export interface FilePaths {
+  rootDir: string;
+  include: string[];
+  exclude: string[];
+  extensions: string[];
+}
+
+const filePaths: FilePaths = {
   rootDir,
   include: configJSON.config.include,
   exclude: ["/vendor/", "i18n/findMessageAndLocale"],
@@ -37,7 +44,7 @@ program
   .action(
     (cmd: { commit: boolean | undefined; files: string[] | undefined }) => {
       convertCodebase(
-        { ...filePaths, extensions: [".js"] },
+        { ...filePaths, extensions: [".js", ".jsx"] },
         !!cmd.commit,
         cmd.files
       );
@@ -48,21 +55,22 @@ program
   .command("ignore-errors")
   .option("-c, --commit")
   .action((cmd: { commit: boolean | undefined }) => {
-    ignoreErrors(filePaths.rootDir, !!cmd.commit);
+    // TODO exclude that file we were skipping before
+    ignoreErrors(filePaths, !!cmd.commit);
   });
 
 program
   .command("ignore-file-errors")
   .option("-c, --commit")
   .action((cmd: { commit: boolean | undefined }) => {
-    ignoreFileErrors(!!cmd.commit);
+    ignoreFileErrors(filePaths, !!cmd.commit);
   });
 
 program
   .command("check-types")
   .option("-c, --commit")
   .action(() => {
-    checkTypes();
+    checkTypes(filePaths);
   });
 
 program.parse(process.argv);
