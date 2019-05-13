@@ -90,7 +90,7 @@ function convertFlowType(path) {
             // @ts-ignore
             return types_1.tsTypeReference(
             // @ts-ignore
-            types_1.identifier(`${id.qualification.name}.${id.id.name}`));
+            types_1.identifier(`${id.qualification.name}.${id.id.name}`), tsTypeParameters);
         }
         else {
             return types_1.tsTypeReference(id, tsTypeParameters);
