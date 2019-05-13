@@ -6,6 +6,7 @@ import { writeFileSync } from "fs";
 import plugin from "./babel-plugin/index";
 import { asyncForEach } from "./util";
 import prettierFormat from "./prettierFormat";
+import { stripComments } from "./stripComments";
 
 function recastParse(
   code: string,
@@ -49,6 +50,7 @@ export default async function convert(files: string[], rootDir: string) {
     let res;
     try {
       res = await babel.transformFileAsync(path, babelOptions(rootDir));
+      res!.code = stripComments(res!.code!, ["// @flow", "// @noflow"]);
     } catch (err) {
       console.log(err);
       errorFiles.push(path);

@@ -17,17 +17,11 @@ const flowComments = [
   "// @noflow"
 ];
 
-const filesFromArgs = (function(): string[] | undefined {
-  const { file } = argv;
-  if (!file) return undefined;
-  return Array.isArray(file) ? file : [file];
-})();
-
 export default async function run(
   paths: FilePaths,
   shouldComit: boolean
 ): Promise<void> {
-  const files = filesFromArgs || (await collectFiles(paths));
+  const files = await collectFiles(paths);
 
   files.forEach(filePath => {
     try {
