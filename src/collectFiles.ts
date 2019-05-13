@@ -1,4 +1,5 @@
 import fs from "fs";
+import path from "path";
 
 import { promisify } from "util";
 import { resolve } from "path";
@@ -25,7 +26,9 @@ export default async function collectFiles(paths: {
   extensions: string[];
 }) {
   const filesArr = await Promise.all(
-    paths.include.map(includeDir => getFiles(`${paths.rootDir}${includeDir}`))
+    paths.include.map(includeDir =>
+      getFiles(path.join(paths.rootDir, includeDir))
+    )
   );
   const files = filesArr.reduce((a, f) => a.concat(f), [] as string[]);
 

@@ -6,7 +6,7 @@ import ignoreFileErrors from "./ignoreFileErrorsRunner";
 import convertCodebase from "./convertCodebase";
 import checkTypes from "./checkRunner";
 
-const rootDir = "../quizlet/";
+const rootDir = process.cwd();
 
 const { configJSON } = createTSCompiler(rootDir);
 
