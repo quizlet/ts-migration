@@ -1,5 +1,5 @@
 {
-  "name": "ts-tools",
+  "name": "ts-migration",
   "description": "Tools to convert a codebase from Flow to Typescript",
   "license": "MIT",
   "author": {
