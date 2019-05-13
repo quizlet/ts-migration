@@ -31,7 +31,7 @@ function process(filePaths, shouldCommit, filesFromCLI) {
         if (errorFiles.length)
             console.log(errorFiles);
         if (shouldCommit) {
-            yield commitAll_1.default("Convert files");
+            yield commitAll_1.default("Convert files", filePaths);
             const renameErrors = [];
             console.log("renaming files");
             const snapsFound = [];
@@ -89,7 +89,7 @@ function process(filePaths, shouldCommit, filesFromCLI) {
                 console.log(renameErrors);
             console.log(`Snaps found: ${snapsFound.length}`);
             console.log(`Snaps Not found: ${snapsNotFound.length}`);
-            yield commitAll_1.default("Rename files");
+            yield commitAll_1.default("Rename files", filePaths);
             console.log(`${successFiles.length} converted successfully.`);
             console.log(`${errorFiles.length} errors`);
             if (errorFiles.length)

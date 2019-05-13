@@ -12,15 +12,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const promise_1 = __importDefault(require("simple-git/promise"));
-const filePaths = {
-    rootDir: "../quizlet/",
-    include: ["app/j", "stories"],
-    exclude: ["/vendor/", "i18n/findMessageAndLocale"],
-    extensions: [".js", ".jsx"]
-};
-const git = promise_1.default(filePaths.rootDir);
-function commit(message) {
+function commit(message, filePaths) {
     return __awaiter(this, void 0, void 0, function* () {
+        const git = promise_1.default(filePaths.rootDir);
         console.log(`Committing: "${message}"`);
         try {
             yield git.add(".");

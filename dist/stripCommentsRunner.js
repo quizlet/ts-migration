@@ -48,7 +48,7 @@ function run(paths, shouldComit) {
             }
         });
         if (shouldComit) {
-            yield commitAll_1.default(`Strip comments`);
+            yield commitAll_1.default(`Strip comments`, paths);
         }
         console.log(`${successFiles.length} files with comments stripped successfully.`);
         if (errorFiles.length) {

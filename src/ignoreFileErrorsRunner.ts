@@ -41,7 +41,7 @@ export default async function run(
   });
 
   if (shouldCommit) {
-    await commit("Ignore File Errors");
+    await commit("Ignore File Errors", paths);
   }
 
   console.log(`${successFiles.length} files with errors ignored successfully.`);

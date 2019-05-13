@@ -44,7 +44,7 @@ function compile(paths, shouldCommit) {
             }
         }));
         if (shouldCommit) {
-            yield commitAll_1.default("Ignore errors");
+            yield commitAll_1.default("Ignore errors", paths);
         }
         console.log(`${successFiles.length} files with errors ignored successfully.`);
         if (errorFiles.length) {

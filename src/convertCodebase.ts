@@ -29,7 +29,7 @@ export default async function process(
   console.log(`${errorFiles.length} errors:`);
   if (errorFiles.length) console.log(errorFiles);
   if (shouldCommit) {
-    await commit("Convert files");
+    await commit("Convert files", filePaths);
 
     const renameErrors: string[] = [];
 
@@ -91,7 +91,7 @@ export default async function process(
 
     console.log(`Snaps found: ${snapsFound.length}`);
     console.log(`Snaps Not found: ${snapsNotFound.length}`);
-    await commit("Rename files");
+    await commit("Rename files", filePaths);
 
     console.log(`${successFiles.length} converted successfully.`);
     console.log(`${errorFiles.length} errors`);

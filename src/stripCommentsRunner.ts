@@ -44,7 +44,7 @@ export default async function run(
   });
 
   if (shouldComit) {
-    await commit(`Strip comments`);
+    await commit(`Strip comments`, paths);
   }
 
   console.log(

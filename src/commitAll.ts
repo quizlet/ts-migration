@@ -1,14 +1,8 @@
 import simplegit from "simple-git/promise";
+import { FilePaths } from "./cli";
 
-const filePaths = {
-  rootDir: "../quizlet/",
-  include: ["app/j", "stories"],
-  exclude: ["/vendor/", "i18n/findMessageAndLocale"],
-  extensions: [".js", ".jsx"]
-};
-const git = simplegit(filePaths.rootDir);
-
-export default async function commit(message: string) {
+export default async function commit(message: string, filePaths: FilePaths) {
+  const git = simplegit(filePaths.rootDir);
   console.log(`Committing: "${message}"`);
   try {
     await git.add(".");
