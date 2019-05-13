@@ -171,7 +171,8 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
       // @ts-ignore
       return tsTypeReference(
         // @ts-ignore
-        identifier(`${id.qualification.name}.${id.id.name}`)
+        identifier(`${id.qualification.name}.${id.id.name}`),
+        tsTypeParameters
       );
     } else {
       return tsTypeReference(id, tsTypeParameters);
