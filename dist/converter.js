@@ -26,6 +26,7 @@ const fs_1 = require("fs");
 const index_1 = __importDefault(require("./babel-plugin/index"));
 const util_1 = require("./util");
 const prettierFormat_1 = __importDefault(require("./prettierFormat"));
+const stripComments_1 = require("./stripComments");
 function recastParse(code, options, parse) {
     return recast_1.default.parse(code, {
         parser: {
@@ -60,6 +61,7 @@ function convert(files, rootDir) {
             let res;
             try {
                 res = yield babel.transformFileAsync(path, exports.babelOptions(rootDir));
+                res.code = stripComments_1.stripComments(res.code, ["// @flow", "// @noflow"]);
             }
             catch (err) {
                 console.log(err);

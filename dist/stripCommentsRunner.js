@@ -25,15 +25,9 @@ const flowComments = [
     "// $FlowFixMe",
     "// @noflow"
 ];
-const filesFromArgs = (function () {
-    const { file } = argv;
-    if (!file)
-        return undefined;
-    return Array.isArray(file) ? file : [file];
-})();
 function run(paths, shouldComit) {
     return __awaiter(this, void 0, void 0, function* () {
-        const files = filesFromArgs || (yield collectFiles_1.default(paths));
+        const files = yield collectFiles_1.default(paths);
         files.forEach(filePath => {
             try {
                 const code = fs_1.readFileSync(filePath, "utf8");
