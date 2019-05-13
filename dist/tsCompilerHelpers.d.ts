@@ -10,5 +10,5 @@ export declare function createTSCompiler(rootDir: string): {
         errors: ts.Diagnostic[];
     };
 };
-export declare function getDiagnostics(paths: FilePaths): Promise<ReadonlyArray<ts.Diagnostic>>;
+export declare function getDiagnostics(paths: FilePaths): Promise<readonly ts.Diagnostic[]>;
 export declare function getFilePath(paths: FilePaths, diagnostic: ts.Diagnostic): string;

@@ -22,6 +22,7 @@ commander_1.default
     .command("strip-comments")
     .option("-c, --commit")
     .action((cmd) => {
+    console.log("Stripping comments from files...");
     stripCommentsRunner_1.default(filePaths, !!cmd.commit);
 });
 commander_1.default
@@ -31,12 +32,14 @@ commander_1.default
     // TODO this might not work
     .option("--files <list>", "A space-seperated list of files to convert", (f) => f.split(" "))
     .action((cmd) => {
+    console.log("Converting the codebase from Flow to Typescript");
     convertCodebase_1.default(Object.assign({}, filePaths, { extensions: [".js", ".jsx"] }), !!cmd.commit, cmd.files);
 });
 commander_1.default
     .command("ignore-errors")
     .option("-c, --commit")
     .action((cmd) => {
+    console.log("Ignoring Typescript errors...");
     // TODO exclude that file we were skipping before
     ignoreErrorsRunner_1.default(filePaths, !!cmd.commit);
 });
@@ -44,12 +47,14 @@ commander_1.default
     .command("ignore-file-errors")
     .option("-c, --commit")
     .action((cmd) => {
+    console.log("Inserting custom ts-ignore pragmas...");
     ignoreFileErrorsRunner_1.default(filePaths, !!cmd.commit);
 });
 commander_1.default
     .command("check-types")
     .option("-c, --commit")
     .action(() => {
+    console.log("Checking Typescript types and skipping ignored files...");
     checkRunner_1.default(filePaths);
 });
 commander_1.default.parse(process.argv);
