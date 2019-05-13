@@ -28,6 +28,7 @@ program
   .command("strip-comments")
   .option("-c, --commit")
   .action((cmd: { commit: boolean | undefined }) => {
+    console.log("Stripping comments from files...");
     stripComments(filePaths, !!cmd.commit);
   });
 
@@ -43,6 +44,8 @@ program
   )
   .action(
     (cmd: { commit: boolean | undefined; files: string[] | undefined }) => {
+      console.log("Converting the codebase from Flow to Typescript");
+
       convertCodebase(
         { ...filePaths, extensions: [".js", ".jsx"] },
         !!cmd.commit,
@@ -55,6 +58,8 @@ program
   .command("ignore-errors")
   .option("-c, --commit")
   .action((cmd: { commit: boolean | undefined }) => {
+    console.log("Ignoring Typescript errors...");
+
     // TODO exclude that file we were skipping before
     ignoreErrors(filePaths, !!cmd.commit);
   });
@@ -63,6 +68,7 @@ program
   .command("ignore-file-errors")
   .option("-c, --commit")
   .action((cmd: { commit: boolean | undefined }) => {
+    console.log("Inserting custom ts-ignore pragmas...");
     ignoreFileErrors(filePaths, !!cmd.commit);
   });
 
@@ -70,6 +76,8 @@ program
   .command("check-types")
   .option("-c, --commit")
   .action(() => {
+    console.log("Checking Typescript types and skipping ignored files...");
+
     checkTypes(filePaths);
   });
 

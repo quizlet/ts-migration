@@ -1,4 +1,4 @@
-# Flow to Typescript Conversion Tools
+# Tools to facilitate Quizlet's transition from Flow to Typescript
 
 Commands:
 
@@ -18,4 +18,5 @@ Ignore all typescript errors:
 
 ```
 npm run ignore-errors [--commit]
+``
 ```
