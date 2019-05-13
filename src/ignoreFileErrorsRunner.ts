@@ -2,7 +2,7 @@ import { groupBy } from "lodash";
 import { readFileSync, writeFileSync } from "fs";
 import commit from "./commitAll";
 import { getDiagnostics, getFilePath } from "./tsCompilerHelpers";
-import { FilePaths } from "./index";
+import { FilePaths } from "./cli";
 
 export const ERROR_COMMENT = "// @quizlet-ts-ignore-errors:";
 

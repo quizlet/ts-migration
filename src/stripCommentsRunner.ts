@@ -3,7 +3,7 @@ import collectFiles from "./collectFiles";
 import { stripComments } from "./stripComments";
 import commit from "./commitAll";
 import prettierFormat from "./prettierFormat";
-import { FilePaths } from "./index";
+import { FilePaths } from "./cli";
 
 const argv = require("minimist")(global.process.argv.slice(2));
 

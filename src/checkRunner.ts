@@ -3,7 +3,7 @@ import { groupBy, partition } from "lodash";
 import { readFileSync } from "fs";
 import { getDiagnostics, getFilePath } from "./tsCompilerHelpers";
 import { ERROR_COMMENT } from "./ignoreFileErrorsRunner";
-import { FilePaths } from "./index";
+import { FilePaths } from "./cli";
 
 const errorFiles: string[] = [];
 const errorsToShow: ts.Diagnostic[] = [];

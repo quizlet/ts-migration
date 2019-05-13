@@ -4,7 +4,7 @@ import insertIgnore from "./insertIgnore";
 import commit from "./commitAll";
 import prettierFormat from "./prettierFormat";
 import { getFilePath, getDiagnostics } from "./tsCompilerHelpers";
-import { FilePaths } from "./index";
+import { FilePaths } from "./cli";
 
 const successFiles: string[] = [];
 const errorFiles: string[] = [];

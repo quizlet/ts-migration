@@ -1,2 +1,2 @@
-import { FilePaths } from "./index";
+import { FilePaths } from "./cli";
 export default function compile(paths: FilePaths, shouldCommit: boolean): Promise<void>;

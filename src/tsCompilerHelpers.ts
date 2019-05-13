@@ -3,7 +3,7 @@ import { readFileSync, existsSync } from "fs";
 
 import path from "path";
 import collectFiles from "./collectFiles";
-import { FilePaths } from "./index";
+import { FilePaths } from "./cli";
 
 export function createTSCompiler(rootDir: string) {
   const fileName = path.join(rootDir, "tsconfig.json");

@@ -9,7 +9,7 @@ import collectFiles from "./collectFiles";
 import convert from "./converter";
 import { asyncForEach } from "./util";
 import commit from "./commitAll";
-import { FilePaths } from "./index";
+import { FilePaths } from "./cli";
 
 const exists = promisify(fs.exists);
 
