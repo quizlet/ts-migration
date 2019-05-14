@@ -107,7 +107,7 @@
     "@babel/parser" "^7.2.2"
     "@babel/types" "^7.2.2"
 
-"@babel/traverse@7.2.3", "@babel/traverse@^7.1.5", "@babel/traverse@^7.2.2", "@babel/traverse@^7.2.3":
+"@babel/traverse@7.2.3", "@babel/traverse@^7.1.5", "@babel/traverse@^7.2.2":
   version "7.2.3"
   resolved "https://registry.yarnpkg.com/@babel/traverse/-/traverse-7.2.3.tgz#7ff50cefa9c7c0bd2d81231fdac122f3957748d8"
   integrity sha512-Z31oUD/fJvEWVR0lNZtfgvVt512ForCTNKYcJBGbPb1QZfve4WGH8Wsy7+Mev33/45fhP/hwQtvgusNdcCMgSw==
@@ -552,12 +552,12 @@ babel-messages@^6.23.0:
   dependencies:
     babel-runtime "^6.22.0"
 
-"babel-plugin-flow-to-typescript@git+https://github.com/rgoldfinger-quizlet/babel-plugin-flow-to-typescript.git#435a2021be539e7daca6fa7a5254b6f8211dd23f":
+"babel-plugin-flow-to-typescript@git+https://github.com/rgoldfinger-quizlet/babel-plugin-flow-to-typescript.git#e6de7ccb13d332d6ecf6e57cdba1e2123cdafa81":
   version "0.3.0"
-  resolved "git+https://github.com/rgoldfinger-quizlet/babel-plugin-flow-to-typescript.git#435a2021be539e7daca6fa7a5254b6f8211dd23f"
+  resolved "git+https://github.com/rgoldfinger-quizlet/babel-plugin-flow-to-typescript.git#e6de7ccb13d332d6ecf6e57cdba1e2123cdafa81"
   dependencies:
-    "@babel/traverse" "^7.2.3"
-    "@babel/types" "^7.2.2"
+    "@babel/traverse" "7.2.3"
+    "@babel/types" "7.2.2"
     "@types/jest" "^24.0.13"
     prettier "^1.17.1"
 
