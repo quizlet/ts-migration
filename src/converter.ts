@@ -3,7 +3,7 @@ import * as babel from "@babel/core";
 import dynamicImport from "@babel/plugin-syntax-dynamic-import";
 import recast from "recast";
 import { writeFileSync } from "fs";
-import plugin from "./babel-plugin/index";
+import plugin from "babel-plugin-flow-to-typescript";
 import { asyncForEach } from "./util";
 import prettierFormat from "./prettierFormat";
 import { stripComments } from "./stripComments";
