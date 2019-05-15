@@ -30,7 +30,7 @@ commander_1.default
     .option("-c, --commit")
     // TODO support directory?
     // TODO this might not work
-    .option("--files <list>", "A space-seperated list of files to convert", (f) => f.split(" "))
+    .option("--files <list>", "A comma-seperated list of files to convert", (f) => f.split(","))
     .action((cmd) => {
     console.log("Converting the codebase from Flow to Typescript");
     convertCodebase_1.default(Object.assign({}, filePaths, { extensions: [".js", ".jsx"] }), !!cmd.commit, cmd.files);
@@ -38,10 +38,12 @@ commander_1.default
 commander_1.default
     .command("ignore-errors")
     .option("-c, --commit")
+    .option("--exclude <list>", "A comma-seperated list of files to exclude", (f) => f.split(","))
     .action((cmd) => {
     console.log("Ignoring Typescript errors...");
-    // TODO exclude that file we were skipping before
-    ignoreErrorsRunner_1.default(filePaths, !!cmd.commit);
+    const paths = Object.assign({}, filePaths, { exclude: [...filePaths.exclude, ...(cmd.exclude || [])] });
+    console.log({ paths });
+    ignoreErrorsRunner_1.default(paths, !!cmd.commit);
 });
 commander_1.default
     .command("ignore-file-errors")
