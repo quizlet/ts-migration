@@ -15,7 +15,7 @@ export default async function compile(
 ): Promise<void> {
   const diagnostics = await getDiagnostics(paths);
   const diagnosticsWithFile = diagnostics.filter(
-    d => !!d.file && !!paths.exclude.some(e => d.file!.fileName.includes(e))
+    d => !!d.file && !paths.exclude.some(e => d.file!.fileName.includes(e))
   );
   const diagnosticsGroupedByFile = groupBy(
     diagnosticsWithFile,

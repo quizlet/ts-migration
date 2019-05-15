@@ -22,7 +22,7 @@ const errorFiles = [];
 function compile(paths, shouldCommit) {
     return __awaiter(this, void 0, void 0, function* () {
         const diagnostics = yield tsCompilerHelpers_1.getDiagnostics(paths);
-        const diagnosticsWithFile = diagnostics.filter(d => !!d.file && !!paths.exclude.some(e => d.file.fileName.includes(e)));
+        const diagnosticsWithFile = diagnostics.filter(d => !!d.file && !paths.exclude.some(e => d.file.fileName.includes(e)));
         const diagnosticsGroupedByFile = lodash_1.groupBy(diagnosticsWithFile, d => d.file.fileName);
         Object.keys(diagnosticsGroupedByFile).forEach((fileName, i, arr) => __awaiter(this, void 0, void 0, function* () {
             const fileDiagnostics = lodash_1.uniqBy(diagnosticsGroupedByFile[fileName], d => d.file.getLineAndCharacterOfPosition(d.start)).reverse();
