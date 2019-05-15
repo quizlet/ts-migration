@@ -19,7 +19,7 @@
     "test-watch": "jest --watch",
     "build": "rm -rf dist && tsc",
     "watch": "tsc --watch",
-    "run-dev": "node -r ts-node/register --inspect src/cli.ts"
+    "dev-cli": "node -r ts-node/register --inspect src/cli.ts"
   },
   "keywords": [
     "babel",

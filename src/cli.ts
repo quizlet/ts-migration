@@ -39,8 +39,8 @@ program
   // TODO this might not work
   .option(
     "--files <list>",
-    "A space-seperated list of files to convert",
-    (f: string) => f.split(" ")
+    "A comma-seperated list of files to convert",
+    (f: string) => f.split(",")
   )
   .action(
     (cmd: { commit: boolean | undefined; files: string[] | undefined }) => {
@@ -57,12 +57,23 @@ program
 program
   .command("ignore-errors")
   .option("-c, --commit")
-  .action((cmd: { commit: boolean | undefined }) => {
-    console.log("Ignoring Typescript errors...");
+  .option(
+    "--exclude <list>",
+    "A comma-seperated list of files to exclude",
+    (f: string) => f.split(",")
+  )
+  .action(
+    (cmd: { commit: boolean | undefined; exclude: string[] | undefined }) => {
+      console.log("Ignoring Typescript errors...");
+      const paths = {
+        ...filePaths,
+        exclude: [...filePaths.exclude, ...(cmd.exclude || [])]
+      };
+      console.log({ paths });
 
-    // TODO exclude that file we were skipping before
-    ignoreErrors(filePaths, !!cmd.commit);
-  });
+      ignoreErrors(paths, !!cmd.commit);
+    }
+  );
 
 program
   .command("ignore-file-errors")
