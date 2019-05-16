@@ -6,7 +6,8 @@ import ignoreFileErrors from "./ignoreFileErrorsRunner";
 import convertCodebase from "./convertCodebase";
 import checkTypes from "./checkRunner";
 
-const rootDir = process.cwd();
+// const rootDir = process.cwd();
+const rootDir = "../quizlet";
 
 const { configJSON } = createTSCompiler(rootDir);
 
@@ -20,7 +21,7 @@ export interface FilePaths {
 const filePaths: FilePaths = {
   rootDir,
   include: configJSON.config.include,
-  exclude: ["/vendor/", "i18n/findMessageAndLocale"],
+  exclude: [],
   extensions: [".ts", ".tsx"]
 };
 
@@ -36,21 +37,30 @@ program
   .command("convert-codebase")
   .option("-c, --commit")
   // TODO support directory?
-  // TODO this might not work
   .option(
     "--files <list>",
     "A comma-seperated list of files to convert",
     (f: string) => f.split(",")
   )
+  .option(
+    "--exclude <list>",
+    "A comma-seperated list of strings to exclude",
+    (f: string) => f.split(",")
+  )
   .action(
-    (cmd: { commit: boolean | undefined; files: string[] | undefined }) => {
+    (cmd: {
+      commit: boolean | undefined;
+      files: string[] | undefined;
+      exclude: string[] | undefined;
+    }) => {
       console.log("Converting the codebase from Flow to Typescript");
-
-      convertCodebase(
-        { ...filePaths, extensions: [".js", ".jsx"] },
-        !!cmd.commit,
-        cmd.files
-      );
+      const paths = {
+        ...filePaths,
+        exclude: [...filePaths.exclude, ...(cmd.exclude || [])],
+        extensions: [".js", ".jsx"]
+      };
+      console.log(paths);
+      convertCodebase(paths, !!cmd.commit, cmd.files);
     }
   );
 
@@ -59,7 +69,7 @@ program
   .option("-c, --commit")
   .option(
     "--exclude <list>",
-    "A comma-seperated list of files to exclude",
+    "A comma-seperated list of strings to exclude",
     (f: string) => f.split(",")
   )
   .action(
@@ -69,7 +79,7 @@ program
         ...filePaths,
         exclude: [...filePaths.exclude, ...(cmd.exclude || [])]
       };
-      console.log({ paths });
+      console.log(paths);
 
       ignoreErrors(paths, !!cmd.commit);
     }

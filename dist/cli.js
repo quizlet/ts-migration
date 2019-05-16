@@ -10,12 +10,13 @@ const ignoreErrorsRunner_1 = __importDefault(require("./ignoreErrorsRunner"));
 const ignoreFileErrorsRunner_1 = __importDefault(require("./ignoreFileErrorsRunner"));
 const convertCodebase_1 = __importDefault(require("./convertCodebase"));
 const checkRunner_1 = __importDefault(require("./checkRunner"));
-const rootDir = process.cwd();
+// const rootDir = process.cwd();
+const rootDir = "../quizlet";
 const { configJSON } = tsCompilerHelpers_1.createTSCompiler(rootDir);
 const filePaths = {
     rootDir,
     include: configJSON.config.include,
-    exclude: ["/vendor/", "i18n/findMessageAndLocale"],
+    exclude: [],
     extensions: [".ts", ".tsx"]
 };
 commander_1.default
@@ -31,18 +32,21 @@ commander_1.default
     // TODO support directory?
     // TODO this might not work
     .option("--files <list>", "A comma-seperated list of files to convert", (f) => f.split(","))
+    .option("--exclude <list>", "A comma-seperated list of strings to exclude", (f) => f.split(","))
     .action((cmd) => {
     console.log("Converting the codebase from Flow to Typescript");
-    convertCodebase_1.default(Object.assign({}, filePaths, { extensions: [".js", ".jsx"] }), !!cmd.commit, cmd.files);
+    const paths = Object.assign({}, filePaths, { exclude: [...filePaths.exclude, ...(cmd.exclude || [])], extensions: [".js", ".jsx"] });
+    console.log(paths);
+    convertCodebase_1.default(paths, !!cmd.commit, cmd.files);
 });
 commander_1.default
     .command("ignore-errors")
     .option("-c, --commit")
-    .option("--exclude <list>", "A comma-seperated list of files to exclude", (f) => f.split(","))
+    .option("--exclude <list>", "A comma-seperated list of strings to exclude", (f) => f.split(","))
     .action((cmd) => {
     console.log("Ignoring Typescript errors...");
     const paths = Object.assign({}, filePaths, { exclude: [...filePaths.exclude, ...(cmd.exclude || [])] });
-    console.log({ paths });
+    console.log(paths);
     ignoreErrorsRunner_1.default(paths, !!cmd.commit);
 });
 commander_1.default
