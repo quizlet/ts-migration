@@ -30,7 +30,6 @@ commander_1.default
     .command("convert-codebase")
     .option("-c, --commit")
     // TODO support directory?
-    // TODO this might not work
     .option("--files <list>", "A comma-seperated list of files to convert", (f) => f.split(","))
     .option("--exclude <list>", "A comma-seperated list of strings to exclude", (f) => f.split(","))
     .action((cmd) => {
