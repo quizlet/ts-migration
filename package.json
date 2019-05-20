@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@babel/plugin-syntax-dynamic-import": "7.2.0",
-    "babel-plugin-flow-to-typescript": "git+https://github.com/rgoldfinger-quizlet/babel-plugin-flow-to-typescript.git#e6de7ccb13d332d6ecf6e57cdba1e2123cdafa81",
+    "babel-plugin-flow-to-typescript": "git+https://github.com/rgoldfinger-quizlet/babel-plugin-flow-to-typescript.git#facfeb4f65e270d3635891b870886b971946ebb8",
     "@babel/traverse": "7.2.3",
     "@babel/types": "7.2.2",
     "@types/babel__core": "7.1.0",
