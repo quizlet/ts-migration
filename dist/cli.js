@@ -10,8 +10,7 @@ const ignoreErrorsRunner_1 = __importDefault(require("./ignoreErrorsRunner"));
 const ignoreFileErrorsRunner_1 = __importDefault(require("./ignoreFileErrorsRunner"));
 const convertCodebase_1 = __importDefault(require("./convertCodebase"));
 const checkRunner_1 = __importDefault(require("./checkRunner"));
-// const rootDir = process.cwd();
-const rootDir = "../quizlet";
+const rootDir = process.cwd();
 const { configJSON } = tsCompilerHelpers_1.createTSCompiler(rootDir);
 const filePaths = {
     rootDir,
