@@ -13,6 +13,7 @@ const bar = undefined;
 
 return {
     audioId: getAudioIdFromTerm(term, termSide),
+    // $FlowFixMeImmutable
     url:
       termSide === TermSide.WORD
         ? // $FlowFixMeImmutable
@@ -24,18 +25,22 @@ return {
 
 describe("stripComments", () => {
   it("should strip // @flow", () => {
-    expect(stripComments(testCode, ["// @flow"])).not.toContain("// @flow");
+    expect(stripComments(testCode, ["// @flow"])[0]).not.toContain("// @flow");
   });
   it("should strip // $FlowFixMe", () => {
-    expect(stripComments(testCode, ["// $FlowFixMe"])).not.toContain(
+    expect(stripComments(testCode, ["// $FlowFixMe"])[0]).not.toContain(
       "// $FlowFixMe"
     );
   });
   it("should retain any code before the comment", () => {
-    expect(stripComments(testCode, ["// $FlowFixMeImmutable"])).toContain("?");
+    expect(stripComments(testCode, ["// $FlowFixMeImmutable"])[0]).toContain(
+      "?"
+    );
   });
   it("should preserve 'undefined'", () => {
-    expect(stripComments(testCode, ["// $FlowFixMeImmutable"])).toContain("?");
+    expect(stripComments(testCode, ["// $FlowFixMeImmutable"])[0]).toContain(
+      "?"
+    );
   });
   it("should strip all at once", () => {
     expect(
@@ -43,7 +48,7 @@ describe("stripComments", () => {
         "// @flow",
         "// $FlowFixMeImmutable",
         "// $FlowFixMe"
-      ])
+      ])[0]
     ).toMatchSnapshot();
   });
 });

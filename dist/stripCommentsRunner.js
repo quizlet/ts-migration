@@ -16,7 +16,6 @@ const collectFiles_1 = __importDefault(require("./collectFiles"));
 const stripComments_1 = require("./stripComments");
 const commitAll_1 = __importDefault(require("./commitAll"));
 const prettierFormat_1 = __importDefault(require("./prettierFormat"));
-const argv = require("minimist")(global.process.argv.slice(2));
 const successFiles = [];
 const errorFiles = [];
 const flowComments = [
@@ -25,13 +24,15 @@ const flowComments = [
     "// $FlowFixMe",
     "// @noflow"
 ];
-function run(paths, shouldComit) {
+function run(paths, comments, shouldComit) {
     return __awaiter(this, void 0, void 0, function* () {
         const files = yield collectFiles_1.default(paths);
+        let count = 0;
         files.forEach(filePath => {
             try {
                 const code = fs_1.readFileSync(filePath, "utf8");
-                const fileData = stripComments_1.stripComments(code, argv.comments || flowComments);
+                const [fileData, countRemoved] = stripComments_1.stripComments(code, comments || flowComments);
+                count = count + countRemoved;
                 const formattedFileData = prettierFormat_1.default(fileData, paths.rootDir);
                 fs_1.writeFileSync(filePath, formattedFileData);
                 successFiles.push(filePath);
@@ -44,7 +45,7 @@ function run(paths, shouldComit) {
         if (shouldComit) {
             yield commitAll_1.default(`Strip comments`, paths);
         }
-        console.log(`${successFiles.length} files with comments stripped successfully.`);
+        console.log(`${count} comments in ${successFiles.length} files stripped successfully.`);
         if (errorFiles.length) {
             console.log(`Error stripping comments in ${errorFiles.length} files:`);
             console.log(errorFiles);

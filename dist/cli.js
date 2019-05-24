@@ -22,9 +22,12 @@ const filePaths = {
 commander_1.default
     .command("strip-comments")
     .option("-c, --commit")
+    .option("--comments <list>", "A comma-seperated list of comments to strip. Must start with `//`", (f) => f.split(","))
     .action((cmd) => {
     console.log("Stripping comments from files...");
-    stripCommentsRunner_1.default(filePaths, !!cmd.commit);
+    if (cmd.comments)
+        console.log("Removing comments: ", cmd.comments);
+    stripCommentsRunner_1.default(filePaths, cmd.comments, !!cmd.commit);
 });
 commander_1.default
     .command("convert-codebase")

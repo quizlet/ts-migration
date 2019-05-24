@@ -11,8 +11,11 @@ export function stripComments(
         const matchedComment = comments.find(c => line.includes(c))!;
         const matchedIndex = line.indexOf(matchedComment);
         if (matchedIndex > 0) {
-          acc.push(line.slice(0, matchedIndex));
-          count = count + 1;
+          const firstPartOfLine = line.slice(0, matchedIndex);
+          if (firstPartOfLine.match(/\S/)) {
+            acc.push(firstPartOfLine);
+            count = count + 1;
+          }
         }
       } else {
         acc.push(line);
