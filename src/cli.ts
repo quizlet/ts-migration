@@ -28,10 +28,18 @@ const filePaths: FilePaths = {
 program
   .command("strip-comments")
   .option("-c, --commit")
-  .action((cmd: { commit: boolean | undefined }) => {
-    console.log("Stripping comments from files...");
-    stripComments(filePaths, !!cmd.commit);
-  });
+  .option(
+    "--comments <list>",
+    "A comma-seperated list of comments to strip. Must start with `//`",
+    (f: string) => f.split(",")
+  )
+  .action(
+    (cmd: { commit: boolean | undefined; comments: string[] | undefined }) => {
+      console.log("Stripping comments from files...");
+      if (cmd.comments) console.log("Removing comments: ", cmd.comments);
+      stripComments(filePaths, cmd.comments, !!cmd.commit);
+    }
+  );
 
 program
   .command("convert-codebase")

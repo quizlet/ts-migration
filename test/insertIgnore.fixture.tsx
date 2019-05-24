@@ -12,6 +12,7 @@ function MultiLine() {
       style={{}}
       className="long class name so the expression is on the next line"
     >
+      <div bar={foo} className="test" />
       {Quizlet.doesNotExist && <div bar={foo} className="test" />}
     </div>
   );
