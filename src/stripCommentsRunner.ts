@@ -5,8 +5,6 @@ import commit from "./commitAll";
 import prettierFormat from "./prettierFormat";
 import { FilePaths } from "./cli";
 
-const argv = require("minimist")(global.process.argv.slice(2));
-
 const successFiles: string[] = [];
 const errorFiles: string[] = [];
 
@@ -19,15 +17,20 @@ const flowComments = [
 
 export default async function run(
   paths: FilePaths,
+  comments: string[] | undefined,
   shouldComit: boolean
 ): Promise<void> {
   const files = await collectFiles(paths);
-
+  let count = 0;
   files.forEach(filePath => {
     try {
       const code = readFileSync(filePath, "utf8");
 
-      const fileData = stripComments(code, argv.comments || flowComments);
+      const [fileData, countRemoved] = stripComments(
+        code,
+        comments || flowComments
+      );
+      count = count + countRemoved;
       const formattedFileData = prettierFormat(fileData, paths.rootDir);
       writeFileSync(filePath, formattedFileData);
       successFiles.push(filePath);
@@ -42,8 +45,9 @@ export default async function run(
   }
 
   console.log(
-    `${successFiles.length} files with comments stripped successfully.`
+    `${count} comments in ${successFiles.length} files stripped successfully.`
   );
+
   if (errorFiles.length) {
     console.log(`Error stripping comments in ${errorFiles.length} files:`);
     console.log(errorFiles);

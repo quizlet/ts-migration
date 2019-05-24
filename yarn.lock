@@ -552,9 +552,9 @@ babel-messages@^6.23.0:
   dependencies:
     babel-runtime "^6.22.0"
 
-"babel-plugin-flow-to-typescript@git+https://github.com/rgoldfinger-quizlet/babel-plugin-flow-to-typescript.git#e6de7ccb13d332d6ecf6e57cdba1e2123cdafa81":
+"babel-plugin-flow-to-typescript@git+https://github.com/rgoldfinger-quizlet/babel-plugin-flow-to-typescript.git#facfeb4f65e270d3635891b870886b971946ebb8":
   version "0.3.0"
-  resolved "git+https://github.com/rgoldfinger-quizlet/babel-plugin-flow-to-typescript.git#e6de7ccb13d332d6ecf6e57cdba1e2123cdafa81"
+  resolved "git+https://github.com/rgoldfinger-quizlet/babel-plugin-flow-to-typescript.git#facfeb4f65e270d3635891b870886b971946ebb8"
   dependencies:
     "@babel/traverse" "7.2.3"
     "@babel/types" "7.2.2"

@@ -1,1 +1,1 @@
-export declare function stripComments(code: string, comments: string[]): string;
+export declare function stripComments(code: string, comments: string[]): [string, number];

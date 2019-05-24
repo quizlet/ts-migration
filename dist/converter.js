@@ -61,7 +61,7 @@ function convert(files, rootDir) {
             let res;
             try {
                 res = yield babel.transformFileAsync(path, exports.babelOptions(rootDir));
-                res.code = stripComments_1.stripComments(res.code, ["// @flow", "// @noflow"]);
+                res.code = stripComments_1.stripComments(res.code, ["// @flow", "// @noflow"])[0];
             }
             catch (err) {
                 console.log(err);

@@ -10,8 +10,7 @@ const ignoreErrorsRunner_1 = __importDefault(require("./ignoreErrorsRunner"));
 const ignoreFileErrorsRunner_1 = __importDefault(require("./ignoreFileErrorsRunner"));
 const convertCodebase_1 = __importDefault(require("./convertCodebase"));
 const checkRunner_1 = __importDefault(require("./checkRunner"));
-// const rootDir = process.cwd();
-const rootDir = "../quizlet";
+const rootDir = process.cwd();
 const { configJSON } = tsCompilerHelpers_1.createTSCompiler(rootDir);
 const filePaths = {
     rootDir,
@@ -22,9 +21,12 @@ const filePaths = {
 commander_1.default
     .command("strip-comments")
     .option("-c, --commit")
+    .option("--comments <list>", "A comma-seperated list of comments to strip. Must start with `//`", (f) => f.split(","))
     .action((cmd) => {
     console.log("Stripping comments from files...");
-    stripCommentsRunner_1.default(filePaths, !!cmd.commit);
+    if (cmd.comments)
+        console.log("Removing comments: ", cmd.comments);
+    stripCommentsRunner_1.default(filePaths, cmd.comments, !!cmd.commit);
 });
 commander_1.default
     .command("convert-codebase")
