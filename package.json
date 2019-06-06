@@ -31,30 +31,29 @@
     "url": "https://github.com/rgoldfinger-quizlet/babel-plugin-flow-to-typescript.git"
   },
   "peerDependencies": {
-    "@babel/core": "^7.2.2"
+    "@babel/core": "^7.2.2",
+    "typescript": ">=3.0"
   },
   "dependencies": {
     "@babel/plugin-syntax-dynamic-import": "7.2.0",
     "babel-plugin-flow-to-typescript": "git+https://github.com/rgoldfinger-quizlet/babel-plugin-flow-to-typescript.git#facfeb4f65e270d3635891b870886b971946ebb8",
     "@babel/traverse": "7.2.3",
     "@babel/types": "7.2.2",
-    "@types/babel__core": "7.1.0",
-    "@types/jest": "^24.0.11",
-    "@types/lodash": "^4.14.123",
-    "@types/prettier": "^1.16.1",
     "lodash": "^4.17.11",
     "prettier": "^1.16.4",
     "recast": "^0.17.5",
     "simple-git": "^1.110.0",
-    "ts-node": "^8.0.3",
-    "tsutils": "^3.10.0",
-    "typescript": "^3.4.5"
+    "tsutils": "^3.10.0"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
+    "@types/babel__core": "7.1.0",
     "@types/babel-core": "^6.25.3",
     "@types/babel-types": "^7.0.1",
+    "@types/jest": "^24.0.11",
+    "@types/lodash": "^4.14.123",
     "@types/node": "^10.12.18",
+    "@types/prettier": "^1.16.1",
     "@types/react": "^16.8.17",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^23.6.0",
@@ -63,7 +62,9 @@
     "react": "^16.8.6",
     "regenerator-runtime": "^0.13.1",
     "ts-jest": "^23.10.5",
-    "tslint": "^5.9.1"
+    "ts-node": "^8.0.3",
+    "tslint": "^5.9.1",
+    "typescript": "^3.4.5"
   },
   "jest": {
     "testURL": "http://localhost/",
