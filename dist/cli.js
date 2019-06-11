@@ -43,12 +43,13 @@ commander_1.default
 commander_1.default
     .command("ignore-errors")
     .option("-c, --commit")
+    .option("--includeJSX", "Insert ignores into JSX -- may cause runtime changes!", true)
     .option("--exclude <list>", "A comma-seperated list of strings to exclude", (f) => f.split(","))
     .action((cmd) => {
     console.log("Ignoring Typescript errors...");
     const paths = Object.assign({}, filePaths, { exclude: [...filePaths.exclude, ...(cmd.exclude || [])] });
     console.log(paths);
-    ignoreErrorsRunner_1.default(paths, !!cmd.commit);
+    ignoreErrorsRunner_1.default(paths, !!cmd.commit, cmd.includeJSX);
 });
 commander_1.default
     .command("ignore-file-errors")

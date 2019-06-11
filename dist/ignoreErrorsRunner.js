@@ -19,7 +19,7 @@ const prettierFormat_1 = __importDefault(require("./prettierFormat"));
 const tsCompilerHelpers_1 = require("./tsCompilerHelpers");
 const successFiles = [];
 const errorFiles = [];
-function compile(paths, shouldCommit) {
+function compile(paths, shouldCommit, includeJSX) {
     return __awaiter(this, void 0, void 0, function* () {
         const diagnostics = yield tsCompilerHelpers_1.getDiagnostics(paths);
         const diagnosticsWithFile = diagnostics.filter(d => !!d.file && !paths.exclude.some(e => d.file.fileName.includes(e)));
@@ -31,7 +31,7 @@ function compile(paths, shouldCommit) {
                 const filePath = tsCompilerHelpers_1.getFilePath(paths, fileDiagnostics[0]);
                 let codeSplitByLine = fs_1.readFileSync(filePath, "utf8").split("\n");
                 fileDiagnostics.forEach((diagnostic, _errorIndex) => {
-                    codeSplitByLine = insertIgnore_1.default(diagnostic, codeSplitByLine);
+                    codeSplitByLine = insertIgnore_1.default(diagnostic, codeSplitByLine, includeJSX);
                 });
                 const fileData = codeSplitByLine.join("\n");
                 const formattedFileData = prettierFormat_1.default(fileData, paths.rootDir);

@@ -34,12 +34,12 @@ function getLine(diagnostic, position) {
     const { line } = diagnostic.file.getLineAndCharacterOfPosition(position || diagnostic.start);
     return line;
 }
-function insertIgnore(diagnostic, codeSplitByLine) {
+function insertIgnore(diagnostic, codeSplitByLine, includeJSX) {
     const convertedAST = utils.convertAst(diagnostic.file);
     const n = utils.getWrappedNodeAtPosition(convertedAST.wrapped, diagnostic.start);
     const line = getLine(diagnostic);
-    const jsx = findParentJSX(n);
-    if (jsx) {
+    const isInJSX = findParentJSX(n);
+    if (isInJSX && !includeJSX) {
         // Don't add ignores in JSX since it's too hard.
         return codeSplitByLine;
     }
