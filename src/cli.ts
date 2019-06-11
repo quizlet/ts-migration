@@ -74,7 +74,11 @@ program
 program
   .command("ignore-errors")
   .option("-c, --commit")
-  .option("--skipJSX", "Skip inserting ignores into JSX", true)
+  .option(
+    "--includeJSX",
+    "Insert ignores into JSX -- may cause runtime changes!",
+    true
+  )
   .option(
     "--exclude <list>",
     "A comma-seperated list of strings to exclude",
@@ -84,7 +88,7 @@ program
     (cmd: {
       commit: boolean | undefined;
       exclude: string[] | undefined;
-      skipJSX: boolean;
+      includeJSX: boolean;
     }) => {
       console.log("Ignoring Typescript errors...");
       const paths = {
@@ -93,7 +97,7 @@ program
       };
       console.log(paths);
 
-      ignoreErrors(paths, !!cmd.commit, cmd.skipJSX);
+      ignoreErrors(paths, !!cmd.commit, cmd.includeJSX);
     }
   );
 

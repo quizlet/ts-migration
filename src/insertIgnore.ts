@@ -36,7 +36,7 @@ function getLine(diagnostic: ts.Diagnostic, position?: number) {
 export default function insertIgnore(
   diagnostic: ts.Diagnostic,
   codeSplitByLine: string[],
-  skipJSX: boolean
+  includeJSX: boolean
 ) {
   const convertedAST = utils.convertAst(diagnostic.file!);
   const n = utils.getWrappedNodeAtPosition(
@@ -45,8 +45,8 @@ export default function insertIgnore(
   );
   const line = getLine(diagnostic);
 
-  const jsx = findParentJSX(n);
-  if (jsx && skipJSX) {
+  const isInJSX = findParentJSX(n);
+  if (isInJSX && !includeJSX) {
     // Don't add ignores in JSX since it's too hard.
     return codeSplitByLine;
   }

@@ -12,7 +12,7 @@ const errorFiles: string[] = [];
 export default async function compile(
   paths: FilePaths,
   shouldCommit: boolean,
-  skipJSX: boolean
+  includeJSX: boolean
 ): Promise<void> {
   const diagnostics = await getDiagnostics(paths);
   const diagnosticsWithFile = diagnostics.filter(
@@ -36,7 +36,7 @@ export default async function compile(
       const filePath = getFilePath(paths, fileDiagnostics[0]);
       let codeSplitByLine = readFileSync(filePath, "utf8").split("\n");
       fileDiagnostics.forEach((diagnostic, _errorIndex) => {
-        codeSplitByLine = insertIgnore(diagnostic, codeSplitByLine, skipJSX);
+        codeSplitByLine = insertIgnore(diagnostic, codeSplitByLine, includeJSX);
       });
       const fileData = codeSplitByLine.join("\n");
       const formattedFileData = prettierFormat(fileData, paths.rootDir);
