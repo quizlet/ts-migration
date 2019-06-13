@@ -2,6 +2,8 @@
 
 These are a collection of tools that we used at Quizlet when migrating from Flow to TypeScript. We hope that you find these tools useful when doing your own migration, but keep in mind that they are made for the particularities of Quizlet's large codebase. You may need to modify these tools to suit your needs, but that said, they should be at the very least a good starting point.
 
+The converter uses a fork of [babel-plugin-flow-to-typescript](https://github.com/rgoldfinger-quizlet/babel-plugin-flow-to-typescript) along with [Recast](https://github.com/benjamn/recast) to preserve formatting. As it runs, it will rename files to `.ts` (or `.tsx` if it contains React), along with any snaps. In order to preserve the git history, this runs the conversion and commits the changes, and then renames all the files in a separate commit.
+
 ## Installation
 
 ```
@@ -28,8 +30,6 @@ yarn ts-migration convert-codebase
 ```
 yarn ts-migration convert-codebase --commit
 ```
-
-In order to preserve the git history, this runs the conversion and commits the files in place, and then renames all the files in a separate commit.
 
 ### Ignore all TypeScript errors:
 
