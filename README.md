@@ -1,4 +1,6 @@
-# Tools to facilitate Quizlet's transition from Flow to Typescript
+# Flow to Typescript Migration Tools
+
+These are a collection of tools that we used at Quizlet when migrating from Flow to Typescript. We hope that you find these tools useful when doing your own migration, but keep in mind that they are made for the particularities of Quizlet's large codebase. You may need to modify these tools to suit your needs, but that said, they should be at the very least a good starting point.
 
 ## Installation
 
@@ -15,42 +17,30 @@ yarn add --dev quizlet/ts-migration.git[#commit]
 
 Once installed, you can access the tools via the binary.
 
-Preview a conversion:
+### Preview a conversion (without renaming files):
 
 ```
 yarn ts-migration convert-codebase
 ```
 
-Commit the conversion and rename files to `.ts[x]`:
+### Convert the codebase and rename files to `.ts[x]`:
 
 ```
-yarn ts-migration --commit
+yarn ts-migration convert-codebase --commit
 ```
 
-Ignore all typescript errors:
+In order to preserve the git history, this runs the conversion and commits the files in place, and then renames all the files in a separate commit.
+
+### Ignore all Typescript errors:
 
 ```
-yarn ts-migration ignore-errors [--commit]
+yarn ts-migration ignore-errors [--commit] [--includeJSX]
 ```
 
-Strip Flow comments
+The `--includeJSX` option can be extremely useful when you have a lot of errors you want to ignore, but will insert ignore comments in such a way that they can appear in the rendered HTML, so be sure to carefully review the output!
+
+### Strip Flow comments
 
 ```
 yarn ts-migration strip-comments [--commit]
-```
-
-## Custom TSC checker
-
-We've implemented a TS typechecker that allows us to ignore all of the TS errors in a given file. It works by adding a special ignore pragma as the first line, which tells the typechecker how many type errors to expect. We ignore those errors, and only fail the typecheker if a) there are more errors than are ignored, or b) there are fewer errors than are ignored.
-
-### Insert the ignore pragma
-
-```
-yarn ts-migration ignore-file-errors [--commit]
-```
-
-### Insert the ignore pragma
-
-```
-yarn ts-migration check-types [--commit]
 ```
