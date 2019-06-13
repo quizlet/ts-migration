@@ -44,3 +44,7 @@ The `--includeJSX` option can be extremely useful when you have a lot of errors 
 ```
 yarn ts-migration strip-comments [--commit]
 ```
+
+# License
+
+ts-migration is [MIT licensed](./LICENSE).
